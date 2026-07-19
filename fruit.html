@@ -780,27 +780,7 @@ spinning=false;
 
 }
 
-spinBtn.onclick=spin;
-
-async function reshuffleBoard(){
-
-showMessage("🔄 Mengacak ulang...");
-
-await animateSpin();
-
-const result=findMatches();
-
-if(result.length>=8){
-
-await destroyMatches(result);
-
-}else{
-
-await reshuffleBoard();
-
-}
-
-}
+spinBtn.onclick=sp
 function findMatches(){
 
 const visited=Array.from(
@@ -945,6 +925,9 @@ await destroyMatches(again);
 
 showMessage("✅ Selesai");
 
+spinBtn.disabled=false;
+
+spinning=false;
 }
 
 }
