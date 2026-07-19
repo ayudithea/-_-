@@ -110,30 +110,43 @@ padding:12px;border-radius:30px}
 </div>
 
 <script>
-const SHEET_ID="1GYfRdPVHRuesS4pUWSAEGP-FSFXs0j8FljOzl_ANRS8";
-const SHEET_NAME="akun";
+const SHEET_ID = "1tilrq1HltJXm4iLWNKKTZaCybsPQy5W74zsJD58mg9c";
+const SHEET_NAME = "akun";
 
-async function login(){
-msg.textContent="Memverifikasi...";
-try{
-const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(SHEET_NAME)}`;
-const txt=await fetch(url).then(r=>r.text());
-const json=JSON.parse(txt.substring(47).slice(0,-2));
-let ok=false;
-json.table.rows.forEach(r=>{
-const u=(r.c[0]?.v||"").toString().trim();
-const p=(r.c[1]?.v||"").toString().trim();
-if(u===user.value.trim()&&p===pass.value.trim()) ok=true;
-});
-if(ok){
-localStorage.setItem("login","true");
-location.href="portal.html";
-}else{
-msg.textContent="Username atau password salah.";
-}
-}catch(e){
-msg.textContent="Periksa SHEET_ID atau koneksi.";
-}
+async function login() {
+    msg.textContent = "Memverifikasi...";
+
+    try {
+        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_NAME}`;
+
+        const txt = await fetch(url).then(r => r.text());
+        const json = JSON.parse(txt.substring(47).slice(0, -2));
+
+        let ok = false;
+
+        json.table.rows.forEach(r => {
+            const u = (r.c[0]?.v || "").toString().trim();
+            const p = (r.c[1]?.v || "").toString().trim();
+
+            if (
+                u === user.value.trim() &&
+                p === pass.value.trim()
+            ) {
+                ok = true;
+            }
+        });
+
+        if (ok) {
+            localStorage.setItem("login", "true");
+            location.href = "portal.html";
+        } else {
+            msg.textContent = "Username atau password salah.";
+        }
+
+    } catch (e) {
+        console.error(e);
+        msg.textContent = "Tidak dapat membaca Google Sheet.";
+    }
 }
 </script>
 </body>
