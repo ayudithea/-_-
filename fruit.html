@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fruit Spin (Casual)</title>
+<style>
+body{margin:0;font-family:Arial;background:linear-gradient(#7fd7ff,#ffe8b3);text-align:center}
+.top{background:#2b2b2b;color:#fff;padding:14px;font-size:24px;font-weight:bold}
+.board{max-width:420px;margin:18px auto;background:#f7edd8;border:8px solid #8b5a2b;border-radius:14px;padding:8px}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.cell{height:64px;background:#fff8ea;border:2px solid #d6c4a5;border-radius:8px;
+display:flex;align-items:center;justify-content:center;font-size:42px}
+.controls{max-width:420px;margin:12px auto;display:flex;justify-content:center;gap:12px}
+button{font-size:18px;padding:12px 24px;border:none;border-radius:12px;background:#ffb300;font-weight:bold;cursor:pointer}
+#status{font-size:18px;margin:10px;color:#5b3b00}
+</style>
+</head>
+<body>
+<div class="top">🍓 Fruit Spin (Casual)</div>
+
+<div class="board">
+<div class="grid" id="grid"></div>
+</div>
+
+<div class="controls">
+<button onclick="spin()">🔄 SPIN</button>
+</div>
+
+<div id="status">Tekan SPIN untuk mengacak buah.</div>
+
+<script>
+const fruits=["🍎","🍓","🍍","🥝","🍇","🥭","🍒","🥥","🍉"];
+const grid=document.getElementById("grid");
+
+function rand(){
+ return fruits[Math.floor(Math.random()*fruits.length)];
+}
+function draw(){
+ grid.innerHTML="";
+ for(let i=0;i<25;i++){
+   const c=document.createElement("div");
+   c.className="cell";
+   c.textContent=rand();
+   grid.appendChild(c);
+ }
+}
+function spin(){
+ status.textContent="Mengacak...";
+ let n=0;
+ const t=setInterval(()=>{
+   draw();
+   n++;
+   if(n>18){
+      clearInterval(t);
+      status.textContent="Selesai! Semua buah diacak secara acak (RNG).";
+   }
+ },80);
+}
+draw();
+</script>
+</body>
+</html>
