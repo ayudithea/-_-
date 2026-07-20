@@ -24,21 +24,13 @@ background:linear-gradient(180deg,#63d8ff,#ffe7a3);
 }
 
 body{
-width:100%;
-height:100%;
-overflow:hidden;
-font-family:Arial,sans-serif;
+    margin:0;
+    font-family:Arial,sans-serif;
 
-background:
-linear-gradient(rgba(255,255,255,.15),rgba(255,255,255,.15)),
-url("https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1400&q=80");
+    background:url("kebun-stroberi.jpg") center center/cover no-repeat fixed;
 
-background-size:cover;
-background-position:center;
-background-repeat:no-repeat;
-animation:bgMove 25s linear infinite;
+    min-height:100vh;
 }
-
 @keyframes bgMove{
 0%{
 background-position:center top;
@@ -86,31 +78,44 @@ border-right:4px solid #8b5a2b;
 
 .board{
     position:relative;
-    overflow:hidden;
-
-    width:100%;
-    aspect-ratio:1;
-
+    width:min(96vw,650px);
+    margin:18px auto;
     padding:28px;
     border-radius:35px;
+    overflow:hidden;
 
-    background:#d8ccb9;
+    background:
+        linear-gradient(rgba(255,255,255,.15),rgba(255,255,255,.15));
+
+    backdrop-filter:blur(4px);
+    -webkit-backdrop-filter:blur(4px);
+
+    box-shadow:
+        0 12px 30px rgba(0,0,0,.35);
 }
-
 .board::before{
     content:"";
     position:absolute;
-    inset:0;
-    background:url("akar.png") center/100% 100% no-repeat;
-    pointer-events:none;
+
+    top:-20px;
+    left:-20px;
+    right:-20px;
+    bottom:-20px;
+
+    background:url("akar.png") center center/100% 100% no-repeat;
+
     z-index:20;
+    pointer-events:none;
 }
 #grid{
     position:relative;
     z-index:10;
+
     display:grid;
     grid-template-columns:repeat(5,1fr);
-    gap:8px;
+    gap:10px;
+
+    padding:35px;
 }
 
 #grid{
@@ -130,23 +135,9 @@ border-right:4px solid #8b5a2b;
 }
 
 .cell{
-    position:relative;
-    overflow:visible;
-
     aspect-ratio:1;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    font-size:44px;
-    line-height:1;
-
-    background:transparent;
-
-    transition:
-        transform .35s ease,
-        opacity .35s ease;
+    background:rgba(255,255,255,.08);
+    border-radius:12px;
 }
 
 /* Bayangan hitam di bawah buah */
