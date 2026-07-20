@@ -150,22 +150,57 @@ transform:translateX(20%);
 }
 
 .cell{
-    aspect-ratio:1;
+    position:relative;
+    overflow:visible;
 
-    background:transparent;
+    aspect-ratio:1;
 
     display:flex;
     justify-content:center;
     align-items:center;
 
-    font-size:48px;
+    font-size:54px;
     line-height:1;
 
-    user-select:none;
+    background:transparent;
 
     transition:
         transform .35s ease,
         opacity .35s ease;
+}
+
+/* Bayangan hitam di bawah buah */
+.cell::after{
+    content:"";
+
+    position:absolute;
+
+    width:58%;
+    height:14%;
+
+    bottom:10px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    background:rgba(0,0,0,.35);
+
+    border-radius:50%;
+
+    filter:blur(6px);
+
+    z-index:0;
+}
+
+/* Gambar buah */
+.cell{
+    text-shadow:
+        0 3px 0 rgba(0,0,0,.15),
+        0 8px 10px rgba(0,0,0,.35);
+}
+
+.cell:hover{
+    transform:translateY(-5px) scale(1.08);
 }
   .fruit{
     position:absolute;
