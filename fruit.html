@@ -414,20 +414,11 @@ async function spin(){
         await animateSpin();
        if(checkScatter()){
 
-    spinBtn.disabled = false;
-    spinning = false;
+    await startFreeSpins();
 
-    while(inFreeSpin && freeSpins > 0){
+    return;
 
-        freeSpins--;
-
-        showMessage("🎁 FREE SPINS : " + freeSpins);
-
-        await sleep(800);
-
-        await spin();
-
-    }
+}
 
     inFreeSpin = false;
 
@@ -781,6 +772,34 @@ grid.classList.remove("bigFlash");
     return false;
 
 }
+ async function startFreeSpins(){
+
+    while(freeSpins > 0){
+
+        freeSpins--;
+
+        showMessage("🎁 FREE SPINS : " + freeSpins);
+
+        await sleep(700);
+
+        await animateSpin();
+
+        const result = findMatches();
+
+        if(result.length){
+            await destroyMatches(result);
+        }
+
+    }
+
+    inFreeSpin = false;
+
+    spinBtn.disabled = false;
+    spinning = false;
+
+    showMessage("Free Spin Selesai");
+
+}   
     
  createBoard();
 showMessage("Tekan tombol SPIN");   
