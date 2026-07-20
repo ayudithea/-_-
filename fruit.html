@@ -412,6 +412,14 @@ async function spin(){
         updatePanel();
 
         await animateSpin();
+       if(checkScatter()){
+
+    spinBtn.disabled = false;
+    spinning = false;
+
+    return;
+
+}
 
         showMessage("🔍 Mencari kombinasi...");
 
@@ -431,6 +439,21 @@ async function spin(){
         showMessage("🎉 Kombinasi ditemukan!");
 
         await destroyMatches(result);
+        if(inFreeSpin){
+
+    freeSpins--;
+
+    showMessage("🎁 FREE SPINS : "+freeSpins);
+
+    if(freeSpins<=0){
+
+        inFreeSpin=false;
+
+        showMessage("Free Spin Selesai");
+
+    }
+
+}
 
     }catch(e){
 
@@ -455,6 +478,9 @@ function findMatches(){
         for(let c=0;c<COLS;c++){
 
             const fruit=board[r][c];
+            if(fruit===SCATTER){
+    continue;
+}
 
             if(!counts[fruit]){
                 counts[fruit]=0;
@@ -739,21 +765,7 @@ grid.classList.remove("bigFlash");
     return false;
 
 }
-    if(inFreeSpin){
-
-    freeSpins--;
-
-    showMessage("🎁 FREE SPINS : "+freeSpins);
-
-    if(freeSpins<=0){
-
-        inFreeSpin=false;
-
-        showMessage("Free Spin Selesai");
-
-    }
-
-}
+    
  createBoard();
 showMessage("Tekan tombol SPIN");   
 </script>
