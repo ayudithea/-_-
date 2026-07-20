@@ -339,7 +339,21 @@ const comboText = document.getElementById("combo");
 const message = document.getElementById("message");
 const spinBtn = document.getElementById("spinBtn");
 function randomFruit(){
-return fruits[Math.floor(Math.random()*fruits.length)];
+
+    // Scatter hanya sekitar 1,5%
+    if(Math.random() < 0.015){
+        return SCATTER;
+    }
+
+    const normalFruits=[
+        "🍎","🍓","🍍","🥝",
+        "🍇","🥭","🍒","🍉","🥥"
+    ];
+
+    return normalFruits[
+        Math.floor(Math.random()*normalFruits.length)
+    ];
+
 }
 function generateFinalBoard(){
 
