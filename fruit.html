@@ -102,14 +102,8 @@ border-right:4px solid #8b5a2b;
 .board::before{
     content:"";
     position:absolute;
-
-    top:-90px;
-    left:-170px;
-    right:-170px;
-    bottom:-130px;
-
-    background:url("akar.png") center center/contain no-repeat;
-
+    inset:0;
+    background:url("akar.png") center/100% 100% no-repeat;
     z-index:20;
     pointer-events:none;
 }
