@@ -71,15 +71,35 @@ gap:8px;
 }
 
 .cell{
-aspect-ratio:1;
-background:white;
-border-radius:12px;
-display:flex;
-justify-content:center;
-align-items:center;
-font-size:48px;
-user-select:none;
-transition:.25s;
+    aspect-ratio:1;
+    background:white;
+    border-radius:12px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:48px;
+    user-select:none;
+
+    transition:
+        transform .35s ease,
+        opacity .35s ease;
+}
+.fall{
+    animation:fall .35s ease;
+}
+
+@keyframes fall{
+
+    from{
+        transform:translateY(-80px);
+        opacity:0;
+    }
+
+    to{
+        transform:translateY(0);
+        opacity:1;
+    }
+
 }
 
 button{
