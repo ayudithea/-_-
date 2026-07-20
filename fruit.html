@@ -361,38 +361,46 @@ await flashBoard();
 
 async function spin(){
 
-if(spinning)return;
+    if(spinning) return;
 
-combo=0;
+    try{
 
-updatePanel();
+        combo=0;
+        updatePanel();
 
-await animateSpin();
+        await animateSpin();
 
-showMessage("🔍 Mencari kombinasi...");
+        showMessage("🔍 Mencari kombinasi...");
 
-await sleep(400);
+        await sleep(400);
 
-const result=findMatches();
+        const result=findMatches();
 
-if(result.length===0){
+        if(result.length===0){
 
-showMessage("❌ Tidak ada kombinasi. Tekan SPIN lagi.");
+            showMessage("❌ Tidak ada kombinasi. Tekan SPIN lagi.");
 
-spinBtn.disabled=false;
+            spinBtn.disabled=false;
+            spinning=false;
+            return;
+        }
 
-spinning=false;
+        showMessage("🎉 Kombinasi ditemukan!");
 
-return;
+        await destroyMatches(result);
+
+    }catch(e){
+
+        console.error(e);
+
+        showMessage(e.message);
+
+        spinBtn.disabled=false;
+        spinning=false;
+
+    }
 
 }
-
-showMessage("🎉 Kombinasi ditemukan!");
-
-await destroyMatches(result);
-}
-
-spinBtn.addEventListener("click",spin);
 function findMatches(){
 
 const visited=Array.from(
