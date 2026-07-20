@@ -66,15 +66,27 @@ box-shadow:0 10px 20px rgba(0,0,0,.35);
 
 #grid{
 display:grid;
-grid-template-columns:repeat(5,1fr);
+grid-template-columns:repeat(6,1fr);
 gap:8px;
 }
 
 .cell{
     aspect-ratio:1;
+
     background:transparent;
-    border-radius:0;
-    box-shadow:none;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:48px;
+    line-height:1;
+
+    user-select:none;
+
+    transition:
+        transform .35s ease,
+        opacity .35s ease;
 }
   .fruit{
     position:absolute;
