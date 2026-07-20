@@ -587,11 +587,14 @@ function updateCell(r,c){
 
     if(!cells[index]) return;
 
-    cells[index].style.transform="scale(1.15)";
-    cells[index].textContent=board[r][c];
+    // tampilkan lagi gambar
+    cells[index].style.opacity = "1";
+
+    cells[index].style.transform = "scale(1.15)";
+    cells[index].textContent = board[r][c];
 
     setTimeout(()=>{
-        cells[index].style.transform="scale(1)";
+        cells[index].style.transform = "scale(1)";
     },40);
 
 }
