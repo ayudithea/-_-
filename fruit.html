@@ -262,12 +262,16 @@ Tekan tombol SPIN
 </div>
 
 <script>
+const SCATTER = "⭐";
 
+let freeSpins = 0;
+let inFreeSpin = false;
 const ROWS=5;
 const COLS=5;
 const MIN_MATCH = 6;
-const fruits=[ "🍎", "🍓", "🍍", "🥝", "🍇", "🥭", "🍒", "🍉", "🥥" ];
-
+const fruits=[const fruits=[
+ "🍎","🍓","🍍","🥝","🍇","🥭","🍒","🍉","🥥","⭐"
+];
 let board=[];
 let finalBoard=[];
 let score=0;
@@ -705,6 +709,49 @@ setTimeout(()=>{
 grid.classList.remove("bigFlash");
 
 },700);
+
+}
+    function checkScatter(){
+
+    let count=0;
+
+    for(let r=0;r<ROWS;r++){
+        for(let c=0;c<COLS;c++){
+
+            if(board[r][c]===SCATTER){
+                count++;
+            }
+
+        }
+    }
+
+    if(count>=4){
+
+        freeSpins+=10;
+        inFreeSpin=true;
+
+        showWin("⭐ FREE SPINS x10 ⭐");
+
+        return true;
+
+    }
+
+    return false;
+
+}
+    if(inFreeSpin){
+
+    freeSpins--;
+
+    showMessage("🎁 FREE SPINS : "+freeSpins);
+
+    if(freeSpins<=0){
+
+        inFreeSpin=false;
+
+        showMessage("Free Spin Selesai");
+
+    }
 
 }
  createBoard();
