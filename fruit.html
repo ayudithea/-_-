@@ -417,6 +417,22 @@ async function spin(){
     spinBtn.disabled = false;
     spinning = false;
 
+    while(inFreeSpin && freeSpins > 0){
+
+        freeSpins--;
+
+        showMessage("🎁 FREE SPINS : " + freeSpins);
+
+        await sleep(800);
+
+        await spin();
+
+    }
+
+    inFreeSpin = false;
+
+    showMessage("Free Spin Selesai");
+
     return;
 
 }
