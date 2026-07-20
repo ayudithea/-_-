@@ -71,15 +71,18 @@ gap:8px;
 }
 
 .cell{
-    position:relative;
-    overflow:visible;
-
-    width:64px;
-    height:64px;
-
+    aspect-ratio:1;
+    background:white;
+    border-radius:12px;
     display:flex;
     justify-content:center;
     align-items:center;
+    font-size:42px;   /* lebih pas untuk 6 baris */
+    user-select:none;
+
+    transition:
+        transform .35s ease,
+        opacity .35s ease;
 }
   .fruit{
     position:absolute;
