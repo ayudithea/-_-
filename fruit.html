@@ -79,78 +79,149 @@ border-left:4px solid #8b5a2b;
 border-right:4px solid #8b5a2b;
 }
 
-/* ===== Pengaturan Buah ===== */
-:root{
+/* =========================
+   BOARD
+========================= */
+.board{
+    position:relative;
+    width:min(96vw,650px);
+    margin:120px auto 30px;
+    padding:8px;
+    overflow:hidden;
 
-    /* Ukuran buah */
-    --fruit-size: 120%;
-
-    /* Posisi buah */
-    --fruit-pos-x: 50%;
-    --fruit-pos-y: 50%;
-
-    /* Geser buah */
-    --fruit-offset-x: 0px;
-    --fruit-offset-y: 0px;
-
-    /* Jarak antar kotak */
-    --grid-gap: 4px;
-
-    /* Ukuran sudut kotak */
-    --cell-radius: 18px;
+    background:transparent;
+    border-radius:28px;
+    box-shadow:none;
 }
 
-/* Grid */
+/* =========================
+   GRID
+========================= */
 #grid{
+    position:relative;
     display:grid;
     grid-template-columns:repeat(5,1fr);
-    gap:var(--grid-gap);
+    gap:4px;
+    width:100%;
 }
 
-/* Kotak */
+/* =========================
+   CELL
+========================= */
 .cell{
     position:relative;
+
     aspect-ratio:1;
-    border-radius:var(--cell-radius);
-    overflow:hidden;
-}
-
-/* Buah */
-.fruit{
-    position:absolute;
-
-    left:var(--fruit-pos-x);
-    top:var(--fruit-pos-y);
-
-    width:var(--fruit-size);
-    height:var(--fruit-size);
-
-    transform:translate(-50%,-50%)
-              translate(var(--fruit-offset-x),var(--fruit-offset-y));
 
     display:flex;
     justify-content:center;
     align-items:center;
 
-    font-size:100%;
+    overflow:hidden;
+
+    border-radius:16px;
+
+    background:rgba(255,255,255,.08);
+
+    font-size:52px;
+
+    transition:
+        transform .25s,
+        opacity .25s;
 }
+
+.cell:hover{
+    transform:scale(1.05);
+}
+
+/* Bayangan buah */
+.cell::after{
+    content:"";
+
+    position:absolute;
+
+    left:50%;
+    bottom:10px;
+
+    width:36%;
+    height:10%;
+
+    transform:translateX(-50%);
+
+    background:rgba(0,0,0,.25);
+
+    border-radius:50%;
+
+    filter:blur(5px);
+
+    pointer-events:none;
+}
+
+/* =========================
+   FRUIT
+   (dipakai nanti kalau pakai PNG)
+========================= */
+.fruit{
+    width:80%;
+    height:80%;
+
+    object-fit:contain;
+
+    user-select:none;
+    pointer-events:none;
+}
+
+/* =========================
+   MESSAGE
+========================= */
+#message{
+    margin-top:15px;
+
+    min-height:32px;
+
+    text-align:center;
+
+    font-size:22px;
+    font-weight:bold;
+
+    color:#fff;
+
+    text-shadow:
+        0 2px 6px rgba(0,0,0,.8);
+}
+
+/* =========================
+   SPIN AREA
+========================= */
+.spinArea{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:12px;
+
+    margin-top:25px;
+
+    background:transparent;
+}
+
+/* =========================
+   FALL
+========================= */
 .fall{
     animation:fall .35s ease;
 }
 
 @keyframes fall{
-
     from{
         transform:translateY(-80px);
         opacity:0;
     }
-
     to{
         transform:translateY(0);
         opacity:1;
     }
-
 }
+
 
 .spinArea{
 display:flex;
