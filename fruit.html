@@ -768,12 +768,15 @@ async function spin(){
 
         if(result.length===0){
 
-            showMessage("❌ Tidak ada kombinasi. Tekan SPIN lagi.");
+    score = Math.max(0, score - 10000);
+    updatePanel();
 
-            spinBtn.disabled=false;
-            spinning=false;
-            return;
-        }
+    showMessage("❌ Tidak ada kombinasi (-10.000)");
+
+    spinBtn.disabled=false;
+    spinning=false;
+    return;
+}
 
         showMessage("🎉 Kombinasi ditemukan!");
 
