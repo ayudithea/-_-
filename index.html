@@ -249,5 +249,14 @@ auth.signInWithEmailAndPassword(e,p)
 .catch(err=>msg.textContent=err.message);
 }
 </script>
+<audio id="thunder" src="thunder.mp3"></audio>
+
+<script>
+window.addEventListener("load",()=>{
+    setTimeout(()=>{
+        document.getElementById("thunder").play().catch(()=>{});
+    },400);
+});
+</script>
 </body>
 </html>
