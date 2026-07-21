@@ -490,26 +490,7 @@ const spinBtn = document.getElementById("spinBtn");
 const MULTIPLIERS = [
     2, 5, 10, 25, 50, 100, 250, 500, 1000, 5000, 10000
 ];
-  let bet = 200;
-
-const betText = document.getElementById("betValue");
-
-function updateBet(){
-    betText.textContent = bet.toLocaleString("id-ID");
-}
-
-document.getElementById("betPlus").onclick = () => {
-    bet += 200;
-    updateBet();
-};
-
-document.getElementById("betMinus").onclick = () => {
-    if(bet > 200){
-        bet -= 200;
-        updateBet();
-    }
-};
-
+ 
 updateBet();
  function randomMultiplier(){
     return MULTIPLIERS[
