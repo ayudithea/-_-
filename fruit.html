@@ -468,7 +468,24 @@ function randomFruit(){
         "🍎","🍓","🍍","🥝",
         "🍇","🥭","🍒","🍉","🥥"
     ];
+if(Math.random()<0.03){   // 3% peluang
+    return MULTIPLIERS[
+        Math.floor(Math.random()*MULTIPLIERS.length)
+    ].icon;
+}
+ function getMultiplier(symbol){
 
+    for(const m of MULTIPLIERS){
+
+        if(m.icon===symbol){
+            return m.value;
+        }
+
+    }
+
+    return 0;
+
+}
     return normalFruits[
         Math.floor(Math.random()*normalFruits.length)
     ];
@@ -1056,24 +1073,7 @@ btn.addEventListener("click",()=>{
     {icon:"5️⃣0️⃣0️⃣0️⃣",value:5000},
     {icon:"1️⃣0️⃣0️⃣0️⃣0️⃣",value:10000}
 ];
- if(Math.random()<0.03){   // 3% peluang
-    return MULTIPLIERS[
-        Math.floor(Math.random()*MULTIPLIERS.length)
-    ].icon;
-}
- function getMultiplier(symbol){
-
-    for(const m of MULTIPLIERS){
-
-        if(m.icon===symbol){
-            return m.value;
-        }
-
-    }
-
-    return 0;
-
-}
+ 
  createBoard();
 showMessage("Tekan tombol SPIN");   
 </script>
