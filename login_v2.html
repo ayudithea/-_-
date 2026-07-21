@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LEGENDS PORTAL - Login</title>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+background:
+radial-gradient(circle at top,#ffd54f22,transparent 35%),
+linear-gradient(135deg,#140d2b,#0f2027,#1b103d);
+color:#fff;
+}
+body:before{
+content:"";
+position:fixed;inset:0;
+background-image:
+radial-gradient(#ffd54f66 1px,transparent 1px);
+background-size:35px 35px;
+opacity:.18;
+animation:move 20s linear infinite;
+}
+@keyframes move{
+from{transform:translateY(0)}
+to{transform:translateY(35px)}
+}
+.wrap{
+width:100%;
+max-width:430px;
+padding:20px;
+position:relative;
+z-index:2;
+}
+.card{
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(14px);
+border:1px solid rgba(255,215,64,.4);
+border-radius:28px;
+padding:28px;
+box-shadow:0 0 40px rgba(255,193,7,.18);
+}
+.logo{
+font-size:64px;
+text-align:center;
+}
+h1{
+text-align:center;
+color:#ffd54f;
+margin:8px 0;
+text-shadow:0 0 12px #ffb300;
+}
+.sub{
+text-align:center;
+color:#ddd;
+margin-bottom:22px;
+}
+.field{
+display:flex;
+align-items:center;
+background:#111827;
+border:2px solid #d4af37;
+border-radius:16px;
+margin:14px 0;
+overflow:hidden;
+}
+.icon{padding:14px;font-size:20px}
+input{
+flex:1;
+padding:15px;
+border:none;
+outline:none;
+background:transparent;
+color:#fff;
+font-size:16px;
+}
+.eye{
+padding:14px;
+cursor:pointer;
+}
+button{
+width:100%;
+padding:15px;
+border:none;
+border-radius:16px;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+margin-top:14px;
+}
+.login{
+background:linear-gradient(90deg,#ffe066,#ffb300);
+color:#222;
+}
+.register{
+background:linear-gradient(90deg,#00c853,#009624);
+color:#fff;
+}
+.links{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-top:18px;
+}
+.links a{
+text-decoration:none;
+padding:12px;
+text-align:center;
+border-radius:14px;
+background:#1f2937;
+color:#fff;
+}
+#msg{
+margin-top:16px;
+text-align:center;
+min-height:22px;
+color:#ffd54f;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="card">
+<div class="logo">🎮</div>
+<h1>LEGENDS PORTAL</h1>
+<div class="sub">Masuk untuk melanjutkan petualanganmu</div>
+
+<div class="field">
+<div class="icon">📧</div>
+<input id="email" type="email" placeholder="Email">
+</div>
+
+<div class="field">
+<div class="icon">🔒</div>
+<input id="password" type="password" placeholder="Password">
+<div class="eye" onclick="password.type=password.type==='password'?'text':'password';this.textContent=password.type==='password'?'👁️':'🙈'">👁️</div>
+</div>
+
+<button class="login" onclick="login()">LOGIN</button>
+<button class="register" onclick="location.href='register.html'">DAFTAR AKUN</button>
+
+<div id="msg"></div>
+
+<div class="links">
+<a href="#">💬 Bantuan</a>
+<a href="#">🌐 Komunitas</a>
+</div>
+</div>
+</div>
+
+<script>
+const firebaseConfig={
+apiKey:"AIzaSyBeTALsF43ij3aAlZjF1XeBjB1gNtaTb2I",
+authDomain:"game-demo-4db7f.firebaseapp.com",
+projectId:"game-demo-4db7f",
+storageBucket:"game-demo-4db7f.firebasestorage.app",
+messagingSenderId:"405381506143",
+appId:"1:405381506143:web:da63f34a24f01e4f0367ea"
+};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+auth.onAuthStateChanged(u=>{if(u)location.href='portal.html';});
+function login(){
+const e=email.value.trim(),p=password.value.trim();
+msg.textContent="Memverifikasi...";
+auth.signInWithEmailAndPassword(e,p)
+.then(()=>location.href='portal.html')
+.catch(err=>msg.textContent=err.message);
+}
+</script>
+</body>
+</html>
