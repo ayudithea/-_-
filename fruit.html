@@ -489,13 +489,7 @@ const scoreText = document.getElementById("score");
 const comboText = document.getElementById("combo");
 const message = document.getElementById("message");
 const spinBtn = document.getElementById("spinBtn");
-function randomFruit(){
-
-    const normalFruits=[
-        "🍎","🍓","🍍","🥝",
-        "🍇","🥭","🍒","🍉","🥥"
-    ];
-const MULTIPLIERS = [
+ const MULTIPLIERS = [
     2, 5, 10, 25, 50, 100, 250, 500, 1000, 5000, 10000
 ];
  function randomMultiplier(){
@@ -503,6 +497,14 @@ const MULTIPLIERS = [
         Math.floor(Math.random()*MULTIPLIERS.length)
     ];
 }
+
+function randomFruit(){
+
+    const normalFruits=[
+        "🍎","🍓","🍍","🥝",
+        "🍇","🥭","🍒","🍉","🥥"
+    ];
+
  async function showMultiplier(){
 
     if(Math.random()>0.2) return;
