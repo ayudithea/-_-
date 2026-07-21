@@ -404,43 +404,34 @@ animation:bigFlash .7s;
 
 </head>
 
-<div class="topPanel">
-    <div>💰 SCORE : <span id="score">0</span></div>
-    <div>🔥 COMBO : <span id="combo">0</span></div>
+<body>
+<div id="game">
+<div>
+💰 Skor :
+<span id="score">0</span>
+</div>
+
+<div>
+🔥 Combo :
+<span id="combo">0</span>
+</div>
+
 </div>
 
 <div class="board">
     <div id="grid"></div>
-
 </div>
 
 <div class="Area">
-
-    <button id="spinBtn">
-        <span>⟳</span>
-    </button>
+    <button id="spinBtn">36</button>
 
     <div id="message">
         Tekan tombol SPIN
     </div>
+</div>
 
 </div>
 
-<div id="freeSpinPopup" style="display:none;">
-    <div class="popupBox">
-        <div class="popupTitle">🎉 SELAMAT! 🎉</div>
-
-        <div class="popupIcon">⭐ ⭐ ⭐ ⭐</div>
-
-        <div class="popupText">
-            Anda mendapatkan
-            <br><br>
-            <b>10 FREE SPINS</b>
-        </div>
-
-        <button id="popupOk">OK</button>
-    </div>
-</div>
 <script>
     
 const SCATTER = "⭐";
@@ -1105,3 +1096,6 @@ showMessage("Tekan tombol SPIN");
 </div>
 </body>
 </html>
+
+
+Tutup
