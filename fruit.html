@@ -763,12 +763,21 @@ await sleep(350);
 
 for(const group of groups){
 
-score += group.length * (combo + 1) * 10;
+let win = group.length * (combo + 1) * 10;
+
+let totalMultiplier = 1;
 
 for(const pos of group){
 
-board[pos.r][pos.c]=null;
+    const multi = getMultiplier(board[pos.r][pos.c]);
+
+    if(multi>0){
+        totalMultiplier *= multi;
+    }
+
 }
+
+score += win * totalMultiplier;
 
 }
 
@@ -1033,7 +1042,38 @@ btn.addEventListener("click",()=>{
     },500);
 
     // Jalankan fungsi spin game di sini
-});    
+}); 
+ const MULTIPLIERS=[
+    {icon:"2️⃣",value:2},
+    {icon:"5️⃣",value:5},
+    {icon:"1️⃣0️⃣",value:10},
+    {icon:"2️⃣5️⃣",value:25},
+    {icon:"5️⃣0️⃣",value:50},
+    {icon:"1️⃣0️⃣0️⃣",value:100},
+    {icon:"2️⃣5️⃣0️⃣",value:250},
+    {icon:"5️⃣0️⃣0️⃣",value:500},
+    {icon:"1️⃣0️⃣0️⃣0️⃣",value:1000},
+    {icon:"5️⃣0️⃣0️⃣0️⃣",value:5000},
+    {icon:"1️⃣0️⃣0️⃣0️⃣0️⃣",value:10000}
+];
+ if(Math.random()<0.03){   // 3% peluang
+    return MULTIPLIERS[
+        Math.floor(Math.random()*MULTIPLIERS.length)
+    ].icon;
+}
+ function getMultiplier(symbol){
+
+    for(const m of MULTIPLIERS){
+
+        if(m.icon===symbol){
+            return m.value;
+        }
+
+    }
+
+    return 0;
+
+}
  createBoard();
 showMessage("Tekan tombol SPIN");   
 </script>
