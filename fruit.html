@@ -1042,25 +1042,6 @@ function showFreeSpinPopup(){
     });
 
 }    
-const btn=document.getElementById("spinBtn");
-
-btn.addEventListener("click",()=>{
-    btn.classList.add("spin");
-
-    setTimeout(()=>{
-        btn.classList.remove("spin");
-    },500);
-
-    // Jalankan fungsi spin game di sini
-}); 
- const MULTIPLIERS=[
-    {icon:"💥2x",value:2},
-    {icon:"💥5x",value:5},
-    {icon:"💥10x",value:10},
-    {icon:"💥25x",value:25},
-    
-];
- 
  createBoard();
 showMessage("Tekan tombol SPIN");   
 </script>
