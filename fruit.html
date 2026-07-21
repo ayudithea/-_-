@@ -761,21 +761,13 @@ await sleep(350);
 
 for(const group of groups){
 
-let win = group.length * (combo + 1) * 10;
+    score += group.length * (combo + 1) * 10;
 
-let totalMultiplier = 1;
+    for(const pos of group){
 
-for(const pos of group){
+        board[pos.r][pos.c]=null;
 
-    const multi = getMultiplier(board[pos.r][pos.c]);
-
-    if(multi>0){
-        totalMultiplier *= multi;
     }
-
-}
-
-score += win * totalMultiplier;
 
 }
 
