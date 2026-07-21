@@ -466,19 +466,7 @@ function randomFruit(){
         "🍇","🥭","🍒","🍉","🥥"
     ];
 
- function getMultiplier(symbol){
-
-    for(const m of MULTIPLIERS){
-
-        if(m.icon===symbol){
-            return m.value;
-        }
-
-    }
-
-    return 0;
-
-}
+ 
     return normalFruits[
         Math.floor(Math.random()*normalFruits.length)
     ];
