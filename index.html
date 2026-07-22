@@ -94,35 +94,83 @@ font-size:22px;font-weight:bold;margin-top:16px;
 .social,.bottom{
 display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px;
 }
+input{
+    flex:1;
+    background:transparent;
+    border:none;
+    outline:none;
+    color:#fff;
+    font-size:18px;
+}
+
+.icon{
+    font-size:24px;
+    margin-right:12px;
+}
+
+.eye{
+    font-size:24px;
+    cursor:pointer;
+}
+
+.links{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-top:18px;
+}
+
+.links a{
+    text-decoration:none;
+    color:#fff;
+    text-align:center;
+    padding:12px;
+    border:1px solid #b98d2d;
+    border-radius:12px;
+    background:rgba(255,255,255,.05);
+}
 
 </style>
 </head>
 <body>
-<div class="wrap">
-<div class="card">
-<div class="field">
-<div class="icon">📧</div>
-<input id="email" type="email" placeholder="Email">
-</div>
+<div class="panel">
 
-<div class="field">
-<div class="icon">🔒</div>
-<input id="password" type="password" placeholder="Password">
-<div class="eye" onclick="password.type=password.type==='password'?'text':'password';this.textContent=password.type==='password'?'👁️':'🙈'">👁️</div>
-</div>
+    <img src="logo.png" class="logo">
 
-<button class="login" onclick="login()">LOGIN</button>
-<button class="register" onclick="location.href='register.html'">DAFTAR AKUN</button>
+    <div class="sub">
+        Masuk untuk melanjutkan petualanganmu
+    </div>
 
-<div id="msg"></div>
+    <div class="field">
+        <div class="icon">📧</div>
+        <input id="email" type="email" placeholder="Email">
+    </div>
 
-<div class="links">
-<a href="#">💬 Bantuan</a>
-<a href="#">🌐 Komunitas</a>
-</div>
-</div>
-</div>
+    <div class="field">
+        <div class="icon">🔒</div>
+        <input id="password" type="password" placeholder="Password">
 
+        <div class="eye"
+        onclick="password.type=password.type==='password'?'text':'password';this.textContent=password.type==='password'?'👁️':'🙈'">
+        👁️
+        </div>
+    </div>
+
+    <button class="login" onclick="login()">LOGIN</button>
+
+    <button class="register"
+    onclick="location.href='register.html'">
+    DAFTAR AKUN
+    </button>
+
+    <div id="msg"></div>
+
+    <div class="links">
+        <a href="#">💬 Bantuan</a>
+        <a href="#">🌐 Komunitas</a>
+    </div>
+
+</div>
 <script>
 const firebaseConfig={
 apiKey:"AIzaSyBeTALsF43ij3aAlZjF1XeBjB1gNtaTb2I",
