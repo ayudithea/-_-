@@ -163,13 +163,14 @@ body{
 #msg{
     position:absolute;
     left:50%;
-    top:75%;
+    top:74%;
     transform:translateX(-50%);
-    width:320px;
+    width:85%;
     text-align:center;
-    color:#ffd54a;
+    color:#ffe16b;
     font-size:15px;
     font-weight:bold;
+    text-shadow:0 0 8px #000;
 }
 </style>
 </head>
@@ -222,13 +223,47 @@ async function login(){
     const p = document.getElementById("password").value;
     const msg = document.getElementById("msg");
 
-    msg.textContent = "Memverifikasi...";
+    if(e==="" || p===""){
+        msg.textContent = "⚠ Silakan masukkan email dan password.";
+        return;
+    }
+
+    msg.textContent = "⏳ Memverifikasi akun LEGENDS PORTAL...";
 
     try{
+
         await auth.signInWithEmailAndPassword(e,p);
-        location.href = "portal.html";
+
+        msg.textContent = "✅ Login berhasil. Selamat datang di LEGENDS PORTAL.";
+
+        setTimeout(()=>{
+            location.replace("portal.html");
+        },800);
+
     }catch(err){
-        msg.textContent = err.message;
+
+        switch(err.code){
+
+            case "auth/invalid-credential":
+            case "auth/wrong-password":
+            case "auth/user-not-found":
+            case "auth/invalid-email":
+                msg.textContent="❌ Email atau password yang Anda masukkan salah.";
+                break;
+
+            case "auth/too-many-requests":
+                msg.textContent="⛔ Terlalu banyak percobaan login. Silakan coba beberapa saat lagi.";
+                break;
+
+            case "auth/network-request-failed":
+                msg.textContent="🌐 Koneksi internet bermasalah. Periksa jaringan Anda.";
+                break;
+
+            default:
+                msg.textContent="⚠ Terjadi kesalahan saat masuk ke LEGENDS PORTAL.";
+                console.error(err);
+        }
+
     }
 
 }
