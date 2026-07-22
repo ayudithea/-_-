@@ -225,8 +225,10 @@ showSuccessPopup();
 }
 
 function goLogin(){
-    location.href="index.html";
-}   
+    auth.signOut().then(()=>{
+        location.replace("index.html");
+    });
+}
 </script>
 <div id="successPopup" class="popup">
     <div class="popup-box">
