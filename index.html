@@ -172,6 +172,48 @@ body{
     font-weight:bold;
     text-shadow:0 0 8px #000;
 }
+ .popup{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.65);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:99999;
+}
+
+.popup-box{
+    width:320px;
+    background:#111;
+    border:2px solid #d4a500;
+    border-radius:18px;
+    padding:25px;
+    text-align:center;
+    box-shadow:0 0 25px rgba(255,215,0,.5);
+}
+
+.popup-box h2{
+    position:static;
+    color:#ffd54a;
+    margin-bottom:15px;
+}
+
+.popup-box p{
+    color:#fff;
+    margin-bottom:20px;
+    line-height:1.5;
+}
+
+.popup-box button{
+    width:150px;
+    height:45px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(#ffe77d,#d4a500);
+    color:#000;
+    font-weight:bold;
+    cursor:pointer;
+}   
 </style>
 </head>
 <body>
@@ -267,6 +309,15 @@ async function login(){
     }
 
 }
+  function showPopup(pesan, title="LEGENDS PORTAL"){
+    document.getElementById("popupTitle").textContent = title;
+    document.getElementById("popupText").textContent = pesan;
+    document.getElementById("popup").style.display = "flex";
+}
+
+function closePopup(){
+    document.getElementById("popup").style.display = "none";
+}  
 </script>
 
 <audio id="bgMusic" preload="auto">
@@ -291,7 +342,9 @@ window.addEventListener("load", () => {
 });
 async function login(){
 
-    alert("Login diklik");
+    showPopup("Silakan lengkapi semua data.");
+    showPopup("Konfirmasi password tidak cocok.");
+    showPopup("Memverifikasi akun...");
 
     const e = document.getElementById("email").value.trim();
     const p = document.getElementById("password").value;
@@ -316,5 +369,12 @@ async function login(){
     }
 }    
 </script>
+   <div id="popup" class="popup">
+    <div class="popup-box">
+        <h2 id="popupTitle">LEGENDS PORTAL</h2>
+        <p id="popupText"></p>
+        <button onclick="closePopup()">OK</button>
+    </div>
+</div> 
 </body>
 </html>
