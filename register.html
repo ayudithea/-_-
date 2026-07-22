@@ -187,8 +187,12 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth();
+console.log("Firebase OK");
+alert("Firebase OK");
 
 document.getElementById("registerBtn").addEventListener("click", async function () {
+
+    alert("Tombol diklik");
 
     const email = document.getElementById("email").value.trim();
     const pass = document.getElementById("password").value;
