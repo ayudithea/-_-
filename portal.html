@@ -73,27 +73,6 @@ firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const db = firebase.firestore();    
-const player = JSON.parse(sessionStorage.getItem("player"));
-
-if(!player){
-    location.replace("index.html");
-}
-document.getElementById("playerEmail").textContent =
-    player.profile.email;
- document.getElementById("coin").textContent =
-    player.wallet.coin;
-
-document.getElementById("diamond").textContent =
-    player.wallet.diamond;
-
-document.getElementById("ticket").textContent =
-    player.wallet.ticket;   
-// Jika belum login, kembali ke halaman login
-auth.onAuthStateChanged((user)=>{
-    if(!user){
-        location.replace("index.html");
-    }
-});
 
 function logout(){
     auth.signOut().then(()=>{
