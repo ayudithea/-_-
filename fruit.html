@@ -512,6 +512,32 @@ firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const db = firebase.firestore();    
+ let player = null;
+
+auth.onAuthStateChanged(async(user)=>{
+
+    if(!user){
+        location.replace("index.html");
+        return;
+    }
+
+    const doc = await db.collection("players")
+        .doc(user.uid)
+        .get();
+
+    if(!doc.exists){
+        alert("Data player tidak ditemukan.");
+        location.replace("portal.html");
+        return;
+    }
+
+    player = doc.data();
+
+    score = player.wallet.coin || 0;
+
+    updatePanel();
+
+});
 const SCATTER = "💎";
 const SCATTER_CHANCE = 20; // 20% per putaran
 let freeSpins = 0;
