@@ -204,7 +204,13 @@ appId:"1:405381506143:web:da63f34a24f01e4f0367ea"
 };
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth();
-auth.onAuthStateChanged(u=>{if(u)location.href='portal.html';});
+auth.onAuthStateChanged((user) => {
+    console.log("Status login:", user);
+
+    if (user) {
+        location.replace("portal.html");
+    }
+});
 function login(){
 const e=email.value.trim(),p=password.value.trim();
 msg.textContent="Memverifikasi...";
