@@ -190,27 +190,44 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth();
+    function showPopup(pesan, callback=null){
+
+    document.getElementById("popupText").textContent = pesan;
+    document.getElementById("successPopup").style.display = "flex";
+
+    window.popupCallback = callback;
+}
+
+function closePopup(){
+
+    document.getElementById("successPopup").style.display = "none";
+
+    if(window.popupCallback){
+        window.popupCallback();
+        window.popupCallback = null;
+    }
+
+}
 console.log("Firebase OK");
-alert("Firebase OK");
+
 
 document.getElementById("registerBtn").addEventListener("click", async function () {
 
-    alert("Tombol diklik");
+    
 
     const email = document.getElementById("email").value.trim();
     const pass = document.getElementById("password").value;
     const conf = document.getElementById("confirm").value;
 const msg = document.getElementById("msg");
     if (!email || !pass || !conf) {
-        alert("Lengkapi semua data.");
-        return;
-    }
+    showPopup("Silakan lengkapi semua data.");
+    return;
+}
 
     if (pass !== conf) {
-        alert("Password tidak sama.");
-        return;
-    }
-
+    showPopup("Konfirmasi password tidak cocok.");
+    return;
+}
     try{
 
     if(email===""){
@@ -228,43 +245,14 @@ const msg = document.getElementById("msg");
     return;
 }
 
-    msg.textContent="⏳ Membuat akun LEGENDS PORTAL...";
-
-    await auth.createUserWithEmailAndPassword(email,pass);
-
-    await auth.signOut();
-
-    msg.textContent="✅ Akun LEGENDS PORTAL berhasil dibuat.";
-
-    showSuccessPopup();
-
-}catch(err){
-
-    switch(err.code){
-
-        case "auth/email-already-in-use":
-            msg.textContent="📧 Email sudah terdaftar. Silakan gunakan email lain.";
-            break;
-
-        case "auth/invalid-email":
-            msg.textContent="📧 Format email tidak valid.";
-            break;
-
-        case "auth/weak-password":
-            msg.textContent="🔒 Password minimal 6 karakter.";
-            break;
-
-        case "auth/network-request-failed":
-            msg.textContent="🌐 Tidak dapat terhubung ke server LEGENDS PORTAL.";
-            break;
-
-        default:
-            msg.textContent="⚠ Terjadi kesalahan saat membuat akun LEGENDS PORTAL.";
-            console.error(err);
+    showPopup(
+    "🎉 Akun berhasil dibuat.\n\nSilakan login menggunakan email dan password yang telah didaftarkan.",
+    function(){
+        auth.signOut().then(()=>{
+            location.replace("index.html");
+        });
     }
-
-}
- });   
+);
  function showSuccessPopup(){
     document.getElementById("successPopup").style.display="flex";
 }
@@ -277,9 +265,13 @@ function goLogin(){
 </script>
 <div id="successPopup" class="popup">
     <div class="popup-box">
-        <h2>🎉 Registrasi Berhasil</h2>
-        <p>Akun Anda berhasil dibuat.</p>
-        <button onclick="goLogin()">OK</button>
+
+        <h2>LEGENDS PORTAL</h2>
+
+        <p id="popupText"></p>
+
+        <button onclick="closePopup()">OK</button>
+
     </div>
 </div>
 </body>
