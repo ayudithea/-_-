@@ -18,6 +18,19 @@ header{position:sticky;top:0;background:#000;border-bottom:2px solid #d4a500;pad
     <div id="playerEmail" style="font-size:13px;color:#ffe16b;margin-top:5px;"></div>
 </div><div class="btn" onclick="logout()">Logout</div></header>
 <div class="banner">PILIH GAME FAVORITMU</div>
+<div id="wallet" style="
+margin:12px;
+padding:12px;
+background:#111;
+border:2px solid #d4a500;
+border-radius:15px;
+font-size:18px;
+line-height:1.8;
+">
+🪙 Coin : <span id="coin">0</span><br>
+💎 Diamond : <span id="diamond">0</span><br>
+🎫 Ticket : <span id="ticket">0</span>
+</div>    
 <div class="grid">
 <div class='card'>
 <div class='cover' style="background-image:url('https://images.unsplash.com/photo-1519996529931-28324d5a630e?w=900')"><div class='badge'>HOT</div></div>
@@ -45,7 +58,7 @@ header{position:sticky;top:0;background:#000;border-bottom:2px solid #d4a500;pad
 <div class='info'><div class='title'>Cards</div><div class='sub'>Arcade Game</div>
 <a class='play' href='kartu.html'>MAIN</a></div></div></div><script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
-
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig={
 apiKey:"AIzaSyBeTALsF43ij3aAlZjF1XeBjB1gNtaTb2I",
@@ -59,13 +72,22 @@ appId:"1:405381506143:web:da63f34a24f01e4f0367ea"
 firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
+const db = firebase.firestore();    
 const player = JSON.parse(sessionStorage.getItem("player"));
 
 if(!player){
     location.replace("index.html");
 }
 document.getElementById("playerEmail").textContent =
-    player.profile.email;    
+    player.profile.email;
+ document.getElementById("coin").textContent =
+    player.wallet.coin;
+
+document.getElementById("diamond").textContent =
+    player.wallet.diamond;
+
+document.getElementById("ticket").textContent =
+    player.wallet.ticket;   
 // Jika belum login, kembali ke halaman login
 auth.onAuthStateChanged((user)=>{
     if(!user){
@@ -78,4 +100,40 @@ function logout(){
         location.replace("index.html");
     });
 }
+async function savePlayer(){
+
+    const user = auth.currentUser;
+
+    if(!user){
+        console.log("User belum login.");
+        return false;
+    }
+
+    try{
+
+        await db.collection("players")
+            .doc(user.uid)
+            .set(player);
+
+        sessionStorage.setItem(
+            "player",
+            JSON.stringify(player)
+        );
+
+        console.log("Data player berhasil disimpan.");
+
+        return true;
+
+    }catch(err){
+
+        console.error("Gagal menyimpan player:", err);
+
+        return false;
+
+    }
+
+}  
+ player.wallet.coin += 100;
+
+savePlayer();   
 </script> </body></html>
