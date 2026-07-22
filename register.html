@@ -204,8 +204,11 @@ registerBtn.onclick=()=>{
  .then(()=>{
     showSuccessPopup();
 })
- .catch(e=>msg.textContent=e.message);
-};
+ .catch((e)=>{
+    console.log(e);
+    alert(e.code + "\n" + e.message);
+    msg.textContent = e.message;
+});
  function showSuccessPopup(){
     document.getElementById("successPopup").style.display="flex";
 }
