@@ -56,7 +56,11 @@ appId:"1:405381506143:web:da63f34a24f01e4f0367ea"
 firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
+const player = JSON.parse(sessionStorage.getItem("player"));
 
+if(!player){
+    location.replace("index.html");
+}
 // Jika belum login, kembali ke halaman login
 auth.onAuthStateChanged((user)=>{
     if(!user){
