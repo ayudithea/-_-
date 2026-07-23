@@ -665,22 +665,6 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 
-// ==========================
-// ADMIN
-// ==========================
-
-const ADMIN_ID = "Admin";
-const ADMIN_PASSWORD = "Ktp487281";
-
-const id = prompt("Masukkan ID Admin");
-const password = prompt("Masukkan Password");
-
-if(id !== ADMIN_ID || password !== ADMIN_PASSWORD){
-    alert("ID atau Password salah!");
-    location.href = "index.html";
-}else{
-    adminName.innerHTML = "Administrator";
-}
 
 // ==========================
 // ELEMEN
@@ -696,6 +680,18 @@ const btnNotif = document.getElementById("btnNotif");
 btnRefresh.onclick = () => {
     location.reload();
 };
+const ADMIN_ID = "Admin";
+const ADMIN_PASSWORD = "Ktp487281";
+
+const id = prompt("Masukkan ID Admin");
+const password = prompt("Masukkan Password");
+
+if(id !== ADMIN_ID || password !== ADMIN_PASSWORD){
+    alert("ID atau Password salah!");
+    location.href = "index.html";
+}else{
+    adminName.innerHTML = "Administrator";
+}
 
 const menuDashboard=document.getElementById("menuDashboard");
 
@@ -1217,52 +1213,28 @@ const ref=db.collection("withdraw").doc(id);
 const snap=await ref.get();
 
 if(!snap.exists){
-
-alert("Data tidak ditemukan.");
-return;
-
+    alert("Data tidak ditemukan.");
+    return;
 }
 
 const data=snap.data();
 
-if(data.status==="Success"){
-
-alert("Withdraw sudah diproses.");
-return;
-
+if(data.status!=="Pending"){
+    alert("Withdraw sudah diproses.");
+    return;
 }
 
-const uid=data.uid;
-const nominal=Number(data.nominal||0);
-
-const playerRef=db.collection("players").doc(uid);
-
-await db.runTransaction(async(tx)=>{
-
-    const player = await tx.get(playerRef);
-
-    if(!player.exists){
-        throw "Player tidak ditemukan";
-    }
-
-    const p = player.data();
-
-    const coin = Number(p.wallet?.coin || 0);
-
-    
+await ref.update({
+    status:"Success",
+    approvedAt:firebase.firestore.FieldValue.serverTimestamp(),
+    approvedBy:"Administrator"
 });
 
-    tx.update(ref,{
-        status:"Success",
-        approvedAt:firebase.firestore.FieldValue.serverTimestamp(),
-        approvedBy:auth.currentUser.email
-    });
-
-});
 alert("Withdraw berhasil.");
 
 }catch(e){
 
+console.error(e);
 alert(e);
 
 }
