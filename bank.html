@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+<title>Legends Bank Monitor</title>
+
+<meta name="theme-color"
+content="#111827">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+
+background:#0f172a;
+
+color:#ffffff;
+
+padding:15px;
+
+}
+
+.header{
+
+background:#1e293b;
+
+padding:18px;
+
+border-radius:15px;
+
+margin-bottom:15px;
+
+box-shadow:0 5px 15px rgba(0,0,0,.35);
+
+}
+
+.header h1{
+
+font-size:24px;
+
+color:#22d3ee;
+
+margin-bottom:8px;
+
+}
+
+.header p{
+
+font-size:13px;
+
+color:#cbd5e1;
+
+}
+
+.status{
+
+display:inline-block;
+
+padding:6px 15px;
+
+border-radius:30px;
+
+font-size:12px;
+
+font-weight:bold;
+
+margin-top:10px;
+
+}
+
+.online{
+
+background:#16a34a;
+
+color:#fff;
+
+}
+
+.offline{
+
+background:#dc2626;
+
+color:#fff;
+
+}
+
+.dashboard{
+
+display:grid;
+
+grid-template-columns:repeat(2,1fr);
+
+gap:12px;
+
+margin-bottom:15px;
+
+}
+
+.card{
+
+background:#1e293b;
+
+border-radius:15px;
+
+padding:15px;
+
+text-align:center;
+
+box-shadow:0 4px 10px rgba(0,0,0,.25);
+
+}
+
+.card h3{
+
+font-size:13px;
+
+font-weight:normal;
+
+color:#cbd5e1;
+
+margin-bottom:10px;
+
+}
+
+.card h2{
+
+font-size:24px;
+
+color:#22d3ee;
+
+}
+
+.section{
+
+background:#1e293b;
+
+border-radius:15px;
+
+padding:15px;
+
+margin-bottom:15px;
+
+box-shadow:0 4px 10px rgba(0,0,0,.25);
+
+}
+
+.section h2{
+
+font-size:18px;
+
+margin-bottom:12px;
+
+color:#22d3ee;
+
+}
+
+table{
+
+width:100%;
+
+border-collapse:collapse;
+
+font-size:13px;
+
+}
+
+th{
+
+background:#334155;
+
+padding:10px;
+
+}
+
+td{
+
+padding:10px;
+
+border-bottom:1px solid #475569;
+
+text-align:center;
+
+}
+
+.log{
+
+background:#0b1220;
+
+height:250px;
+
+overflow-y:auto;
+
+padding:10px;
+
+border-radius:10px;
+
+font-size:12px;
+
+line-height:20px;
+
+}
+
+.success{
+
+color:#22c55e;
+
+}
+
+.pending{
+
+color:#f59e0b;
+
+}
+
+.failed{
+
+color:#ef4444;
+
+}
+
+button{
+
+padding:10px 18px;
+
+border:none;
+
+border-radius:8px;
+
+cursor:pointer;
+
+font-weight:bold;
+
+}
+
+@media(max-width:600px){
+
+.dashboard{
+
+grid-template-columns:1fr;
+
+}
+
+table{
+
+font-size:11px;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<div class="header">
+
+<h1>🏦 LEGENDS BANK MONITOR</h1>
+
+<p>
+Sistem Monitoring Deposit Otomatis
+</p>
+
+<br>
+
+<div>
+
+Firebase :
+
+<span
+id="firebaseStatus"
+class="status offline">
+
+OFFLINE
+
+</span>
+
+</div>
+
+<br>
+
+<div>
+
+Jam :
+
+<span id="clock">
+
+00:00:00
+
+</span>
+
+</div>
+
+</div>
+
+<!-- ================= DASHBOARD ================= -->
+
+<div class="dashboard">
+
+<div class="card">
+
+<h3>Deposit Pending</h3>
+
+<h2 id="pendingCount">
+
+0
+
+</h2>
+
+</div>
+
+<div class="card">
+
+<h3>Deposit Success</h3>
+
+<h2 id="successCount">
+
+0
+
+</h2>
+
+</div>
+
+<div class="card">
+
+<h3>Total Hari Ini</h3>
+
+<h2 id="todayTotal">
+
+Rp0
+
+</h2>
+
+</div>
+
+<div class="card">
+
+<h3>Transfer Masuk</h3>
+
+<h2 id="transferCount">
+
+0
+
+</h2>
+
+</div>
+
+</div>
+
+<!-- ================= TRANSFER BANK ================= -->
+
+<div class="section">
+
+<h2>
+💳 Transfer Bank Terbaru
+</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Bank</th>
+
+<th>Nominal</th>
+
+<th>Waktu</th>
+
+<th>Status</th>
+
+</tr>
+
+</thead>
+
+<tbody id="bankTable">
+
+<tr>
+
+<td colspan="4">
+
+Belum ada transfer
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<!-- ================= DEPOSIT PENDING ================= -->
+
+<div class="section">
+
+<h2>
+⏳ Deposit Pending
+</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Player</th>
+
+<th>UID</th>
+
+<th>Nominal</th>
+
+<th>Sisa</th>
+
+<th>Status</th>
+
+</tr>
+
+</thead>
+
+<tbody id="depositTable">
+
+<tr>
+
+<td colspan="5">
+
+Tidak ada deposit pending
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<!-- ================= LOG ================= -->
+
+<div class="section">
+
+<h2>
+📜 Aktivitas Sistem
+</h2>
+
+<div
+id="systemLog"
+class="log">
+
+<div class="pending">
+
+Menunggu koneksi Firebase...
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ================= PENGATURAN ================= -->
+
+<div class="section">
+
+<h2>
+⚙ Pengaturan
+</h2>
+
+<button
+id="autoBtn">
+
+🟢 AUTO DEPOSIT AKTIF
+
+</button>
+
+</div>
+
+<!-- ========================= -->
+<!-- FIREBASE -->
+<!-- ========================= -->
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+
+// ==========================
+// FIREBASE
+// ==========================
+
+const firebaseConfig = {
+
+apiKey:"AIzaSyBeTALsF43ij3aAlZjF1XeBjB1gNtaTb2I",
+
+authDomain:"game-demo-4db7f.firebaseapp.com",
+
+projectId:"game-demo-4db7f",
+
+storageBucket:"game-demo-4db7f.firebasestorage.app",
+
+messagingSenderId:"405381506143",
+
+appId:"1:405381506143:web:da63f34a24f01e4f0367ea"
+
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+
+const db = firebase.firestore();
+
+
+// ==========================
+// ELEMEN
+// ==========================
+
+const firebaseStatus=document.getElementById("firebaseStatus");
+
+const clock=document.getElementById("clock");
+
+const pendingCount=document.getElementById("pendingCount");
+
+const successCount=document.getElementById("successCount");
+
+const todayTotal=document.getElementById("todayTotal");
+
+const transferCount=document.getElementById("transferCount");
+
+const bankTable=document.getElementById("bankTable");
+
+const depositTable=document.getElementById("depositTable");
+
+const systemLog=document.getElementById("systemLog");
+
+const autoBtn=document.getElementById("autoBtn");
+
+let AUTO=true;
+
+
+// ==========================
+// STATUS FIREBASE
+// ==========================
+
+firebaseStatus.className="status online";
+
+firebaseStatus.innerHTML="ONLINE";
+
+
+// ==========================
+// JAM REALTIME
+// ==========================
+
+setInterval(()=>{
+
+clock.innerHTML=
+new Date().toLocaleString("id-ID");
+
+},1000);
+
+
+// ==========================
+// LOG
+// ==========================
+
+function addLog(text,color="success"){
+
+systemLog.innerHTML=
+"<div class='"+color+"'>["+
+new Date().toLocaleTimeString("id-ID")+
+"] "+text+"</div>"+systemLog.innerHTML;
+
+}
+
+
+// ==========================
+// AUTO ON OFF
+// ==========================
+
+autoBtn.onclick=()=>{
+
+AUTO=!AUTO;
+
+autoBtn.innerHTML=AUTO?
+
+"🟢 AUTO DEPOSIT AKTIF"
+
+:
+
+"🔴 AUTO DEPOSIT NONAKTIF";
+
+addLog(
+AUTO?
+"Auto Deposit Aktif":
+"Auto Deposit Dimatikan",
+"pending"
+);
+
+};
+
+addLog("Bank Monitor Berhasil Dimuat");
+
+// ==========================
+// LOAD DEPOSIT PENDING
+// ==========================
+
+function loadPendingDeposit(){
+
+db.collection("deposit")
+.where("status","==","Pending")
+.orderBy("createdAt","desc")
+.onSnapshot((snap)=>{
+
+pendingCount.innerHTML=snap.size;
+
+depositTable.innerHTML="";
+
+if(snap.empty){
+
+depositTable.innerHTML=`
+<tr>
+<td colspan="5">
+Tidak ada deposit pending
+</td>
+</tr>
+`;
+
+return;
+
+}
+
+snap.forEach(doc=>{
+
+const d=doc.data();
+
+const nominal=Number(d.nominal||0);
+
+let sisa="-";
+
+if(d.createdAt){
+
+const expired=
+d.createdAt.toDate().getTime()
++(10*60*1000);
+
+const detik=
+Math.floor((expired-Date.now())/1000);
+
+if(detik>0){
+
+const m=Math.floor(detik/60);
+
+const s=detik%60;
+
+sisa=m+"m "+s+"d";
+
+}else{
+
+sisa="Expired";
+
+}
+
+}
+
+depositTable.innerHTML+=`
+
+<tr>
+
+<td>${d.nickname||"-"}</td>
+
+<td>${d.uid||"-"}</td>
+
+<td>
+
+Rp ${nominal.toLocaleString("id-ID")}
+
+</td>
+
+<td>${sisa}</td>
+
+<td>${d.status}</td>
+
+</tr>
+
+`;
+
+});
+
+});
+
+}
+
+loadPendingDeposit();
+
+
+// ==========================
+// LOAD BANK NOTIFICATION
+// ==========================
+
+function loadBankNotification(){
+
+db.collection("bank_notification")
+.orderBy("time","desc")
+.limit(20)
+.onSnapshot((snap)=>{
+
+transferCount.innerHTML=snap.size;
+
+bankTable.innerHTML="";
+
+if(snap.empty){
+
+bankTable.innerHTML=`
+
+<tr>
+
+<td colspan="4">
+
+Belum ada transfer
+
+</td>
+
+</tr>
+
+`;
+
+return;
+
+}
+
+snap.forEach(doc=>{
+
+const d=doc.data();
+
+const nominal=
+Number(d.nominal||0);
+
+const waktu=
+d.time
+? d.time.toDate().toLocaleTimeString("id-ID")
+: "-";
+
+bankTable.innerHTML+=`
+
+<tr>
+
+<td>${d.bank||"-"}</td>
+
+<td>
+
+Rp ${nominal.toLocaleString("id-ID")}
+
+</td>
+
+<td>${waktu}</td>
+
+<td>
+
+${d.processed?"✔":"Pending"}
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+});
+
+}
+
+loadBankNotification();
+
+addLog("Monitoring Deposit Aktif");
+
+// ==========================
+// AUTO MATCHING
+// ==========================
+
+function autoDeposit(){
+
+db.collection("bank_notification")
+.where("processed","==",false)
+.onSnapshot(async(snap)=>{
+
+if(!AUTO) return;
+
+for(const item of snap.docs){
+
+const notif=item.data();
+
+const nominal=Number(notif.nominal||0);
+
+addLog("Transfer masuk Rp "+
+nominal.toLocaleString("id-ID"));
+
+const dep=await db.collection("deposit")
+.where("status","==","Pending")
+.where("nominal","==",nominal)
+.limit(1)
+.get();
+
+if(dep.empty){
+
+addLog(
+"Nominal tidak ditemukan",
+"failed"
+);
+
+continue;
+
+}
+
+const depDoc=dep.docs[0];
+
+const deposit=depDoc.data();
+
+const uid=deposit.uid;
+
+const playerRef=db.collection("players").doc(uid);
+
+try{
+
+await db.runTransaction(async(tx)=>{
+
+const player=await tx.get(playerRef);
+
+if(!player.exists){
+
+throw "Player tidak ditemukan";
+
+}
+
+const p=player.data();
+
+const coin=Number(
+p.wallet?.coin||0
+);
+
+tx.update(playerRef,{
+
+"wallet.coin":coin+nominal
+
+});
+
+tx.update(depDoc.ref,{
+
+status:"Success",
+
+approvedAt:firebase.firestore.FieldValue.serverTimestamp(),
+
+approvedBy:"BANK MONITOR"
+
+});
+
+tx.update(item.ref,{
+
+processed:true,
+
+processedAt:firebase.firestore.FieldValue.serverTimestamp()
+
+});
+
+});
+
+addLog(
+"Deposit "+(deposit.nickname||uid)+" berhasil",
+"success"
+);
+
+}catch(err){
+
+console.error(err);
+
+addLog(
+"Gagal : "+err,
+"failed"
+);
+
+}
+
+}
+
+});
+
+}
+
+autoDeposit();
+
+
+// ==========================
+// TOTAL SUCCESS
+// ==========================
+
+db.collection("deposit")
+.where("status","==","Success")
+.onSnapshot((snap)=>{
+
+successCount.innerHTML=snap.size;
+
+let total=0;
+
+snap.forEach(doc=>{
+
+total+=Number(doc.data().nominal||0);
+
+});
+
+todayTotal.innerHTML=
+"Rp "+
+total.toLocaleString("id-ID");
+
+});
+
+
+// ==========================
+// SELESAI
+// ==========================
+
+addLog("Bank Monitor Siap Digunakan");
+
+</script>
+
+</body>
+</html>
