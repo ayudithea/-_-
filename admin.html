@@ -1046,7 +1046,9 @@ ${
       `
     : d.status === "Success"
     ? `<span style="color:#00ff66;font-weight:bold;">✅ Success</span>`
-    : `<span style="color:#ff4444;font-weight:bold;">❌ Ditolak</span>`
+    : d.status === "Reject"
+? `<span style="color:#ff4444;font-weight:bold;">❌ Ditolak</span>`
+: "-"
 }
 </td>
 
