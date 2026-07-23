@@ -1272,23 +1272,7 @@ alert(e);
 }
 
 }
-async function rejectWithdraw(id){
 
-await db.collection("withdraw")
-.doc(id)
-.update({
-
-status:"Reject",
-
-rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),
-
-rejectedBy: "Administrator"
-
-});
-
-alert("Withdraw ditolak.");
-
-}
 // ==========================
 // LOAD PLAYER
 // ==========================
