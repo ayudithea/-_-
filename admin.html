@@ -1076,7 +1076,7 @@ status:"Reject",
 
 rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),
 
-rejectedBy:auth.currentUser.email
+rejectedBy: "Administrator"
 
 });
 
@@ -1126,7 +1126,7 @@ try{
         tx.update(ref,{
             status:"Success",
             approvedAt:firebase.firestore.FieldValue.serverTimestamp(),
-            approvedBy:auth.currentUser.email
+            approvedBy: "Administrator"
         });
 
     });
@@ -1249,8 +1249,7 @@ await db.runTransaction(async(tx)=>{
 
     const coin = Number(p.wallet?.coin || 0);
 
-    tx.update(playerRef,{
-    "wallet.coin": coin - nominal
+    
 });
 
     tx.update(ref,{
@@ -1279,7 +1278,7 @@ status:"Reject",
 
 rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),
 
-rejectedBy:auth.currentUser.email
+rejectedBy: "Administrator"
 
 });
 
