@@ -945,83 +945,50 @@ btnNotif.innerHTML = "🔔 " + (total + w.size);
 }
 
 loadNotifikasi();
-// ==========================
-// DASHBOARD REALTIME
-// ==========================
-
-function loadDashboard(){
-
-// Total Player
 function loadDashboard(){
 
     // Total Player
     db.collection("players").onSnapshot(
-
         (snap)=>{
-
             document.getElementById("totalPlayer").innerHTML = snap.size;
 
             let totalCoin = 0;
 
             snap.forEach(doc=>{
-
                 const data = doc.data();
-
                 totalCoin += Number(data.wallet?.coin || 0);
-
             });
 
             document.getElementById("totalCoin").innerHTML =
                 totalCoin.toLocaleString("id-ID");
-
         },
-
         (err)=>{
-
             console.error("Players Error :", err);
-
         }
-
     );
 
     // Deposit Pending
     db.collection("deposit")
     .where("status","==","Pending")
     .onSnapshot(
-
         (snap)=>{
-
-            document.getElementById("depositPending").innerHTML =
-                snap.size;
-
+            document.getElementById("depositPending").innerHTML = snap.size;
         },
-
         (err)=>{
-
             console.error("Deposit Error :", err);
-
         }
-
     );
 
     // Withdraw Pending
     db.collection("withdraw")
     .where("status","==","Pending")
     .onSnapshot(
-
         (snap)=>{
-
-            document.getElementById("withdrawPending").innerHTML =
-                snap.size;
-
+            document.getElementById("withdrawPending").innerHTML = snap.size;
         },
-
         (err)=>{
-
             console.error("Withdraw Error :", err);
-
         }
-
     );
 
 }
