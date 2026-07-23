@@ -1149,7 +1149,7 @@ await db.runTransaction(async(tx)=>{
 
 const player=await tx.get(playerRef);
 
-if(!player.exists){
+if(!player.exists)
 
 throw "Player tidak ditemukan";
 
@@ -1345,9 +1345,7 @@ alert("Withdraw ditolak.");
 function loadPlayer(){
 
 db.collection("players")
-.orderBy("profile.nickname")
-.onSnapshot((snap)=>{
-
+.onSnapshot(...)
 const tbody=document.getElementById("playerTable");
 
 tbody.innerHTML="";
@@ -1425,7 +1423,7 @@ async function detailPlayer(uid){
 
 const snap=await db.collection("players")
 .doc(uid)
-.get();
+.onSnapshot(...)
 
 if(!snap.exists){
 
