@@ -201,7 +201,7 @@ display:none;
 <body>
 
 <header>
-
+<h2>👑 Legends Portal Admin</h2>
 <div style="display:flex;align-items:center;gap:12px;">
 
 <button class="btn blue" id="btnRefresh">
@@ -1097,6 +1097,24 @@ Belum ada data deposit.
 }
 
 loadDeposit();
+
+async function rejectDeposit(id){
+
+await db.collection("deposit")
+.doc(id)
+.update({
+
+status:"Reject",
+
+rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),
+
+rejectedBy:auth.currentUser.email
+
+});
+
+alert("Deposit ditolak.");
+
+}
 async function approveDeposit(id){
 
 try{
@@ -1434,6 +1452,7 @@ alert(
 );
 
 }
+
 </script>
 
 </body>
