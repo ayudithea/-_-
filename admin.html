@@ -1276,26 +1276,29 @@ async function approveWithdraw(id){
 
 try{
 
-const ref=db.collection("withdraw").doc(id);
+    const ref = db.collection("withdraw").doc(id);
+    const snap = await ref.get();
 
-const snap=await ref.get();
+    if(!snap.exists){
+        alert("Data tidak ditemukan.");
+        return;
+    }
 
-if(!snap.exists){
+    await ref.update({
+        status:"Success",
+        approvedAt:firebase.firestore.FieldValue.serverTimestamp(),
+        approvedBy:auth.currentUser.email
+    });
 
-alert("Data tidak ditemukan.");
-return;
+    alert("Withdraw berhasil.");
+
+}catch(e){
+
+    console.error(e);
+    alert(e);
 
 }
 
-await ref.update({
-    status:"Success",
-    approvedAt:firebase.firestore.FieldValue.serverTimestamp(),
-    approvedBy:auth.currentUser.email
-});
-
-alert("Withdraw ditolak.");
-
-}
 }
 // ==========================
 // LOAD PLAYER
