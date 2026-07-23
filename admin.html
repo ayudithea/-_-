@@ -173,9 +173,26 @@ background:#ffd54a;
 color:black;
 }
 
+#btnNotif{
+position:relative;
+animation:bell 1s infinite;
+}
+
+@keyframes bell{
+
+0%{transform:rotate(0deg);}
+20%{transform:rotate(-15deg);}
+40%{transform:rotate(15deg);}
+60%{transform:rotate(-10deg);}
+80%{transform:rotate(10deg);}
+100%{transform:rotate(0deg);}
+
+}
+
 .hidden{
 display:none;
 }
+
 
 </style>
 
@@ -185,9 +202,15 @@ display:none;
 
 <header>
 
-<h2>👑 Legends Portal Admin</h2>
+<div style="display:flex;align-items:center;gap:12px;">
 
-<div>
+<button class="btn blue" id="btnRefresh">
+🔄 Refresh
+</button>
+
+<button class="btn yellow" id="btnNotif">
+🔔 0
+</button>
 
 <span id="adminName">
 Memuat...
@@ -198,7 +221,6 @@ Logout
 </button>
 
 </div>
-
 </header>
 
 <div class="container">
@@ -438,13 +460,13 @@ Belum ada data.
 
 <tbody id="withdrawTable">
 
+<tr>
+<td colspan="4">
+Belum ada data withdraw.
+</td>
+</tr>
+
 </tbody>
-
-</table>
-
-</div>
-
-</div>
 
 <!-- ========================= -->
 <!-- PLAYER -->
@@ -651,6 +673,13 @@ const ADMIN_EMAILS=[
 const adminName=document.getElementById("adminName");
 
 const btnLogout=document.getElementById("btnLogout");
+
+const btnRefresh = document.getElementById("btnRefresh");
+const btnNotif = document.getElementById("btnNotif");
+
+btnRefresh.onclick = () => {
+    location.reload();
+};
 
 const menuDashboard=document.getElementById("menuDashboard");
 
@@ -887,6 +916,400 @@ menuLog.classList.add("active");
 
 };
 
+// ==========================
+// NOTIFIKASI REALTIME
+// ==========================
+
+function loadNotifikasi(){
+
+let total = 0;
+
+db.collection("deposit")
+.where("status","==","Pending")
+.onSnapshot((snap)=>{
+
+total = snap.size;
+
+db.collection("withdraw")
+.where("status","==","Pending")
+.get()
+.then((w)=>{
+
+btnNotif.innerHTML = "🔔 " + (total + w.size);
+
+});
+
+});
+
+}
+
+loadNotifikasi();
+// ==========================
+// DASHBOARD REALTIME
+// ==========================
+
+function loadDashboard(){
+
+// Total Player
+db.collection("players").onSnapshot((snap)=>{
+
+document.getElementById("totalPlayer").innerHTML = snap.size;
+
+let totalCoin = 0;
+
+snap.forEach(doc=>{
+
+const data = doc.data();
+
+if(data.wallet && data.wallet.coin){
+
+totalCoin += Number(data.wallet.coin);
+
+}
+
+});
+
+document.getElementById("totalCoin").innerHTML =
+totalCoin.toLocaleString("id-ID");
+
+});
+
+// Deposit Pending
+db.collection("deposit")
+.where("status","==","Pending")
+.onSnapshot((snap)=>{
+
+document.getElementById("depositPending").innerHTML =
+snap.size;
+
+});
+
+// Withdraw Pending
+db.collection("withdraw")
+.where("status","==","Pending")
+.onSnapshot((snap)=>{
+
+document.getElementById("withdrawPending").innerHTML =
+snap.size;
+
+});
+
+}
+
+loadDashboard();
+// ==========================
+// LOAD DEPOSIT
+// ==========================
+
+function loadDeposit(){
+
+db.collection("deposit")
+.orderBy("createdAt","desc")
+.onSnapshot((snap)=>{
+
+const tbody=document.getElementById("depositTable");
+
+tbody.innerHTML="";
+
+let pending=0;
+let success=0;
+let reject=0;
+let totalNominal=0;
+
+snap.forEach(doc=>{
+
+const d=doc.data();
+
+const tanggal=d.createdAt
+? d.createdAt.toDate().toLocaleString("id-ID")
+: "-";
+
+const nominal=Number(d.nominal||0);
+
+totalNominal+=nominal;
+
+if(d.status==="Pending") pending++;
+if(d.status==="Success") success++;
+if(d.status==="Reject") reject++;
+
+tbody.innerHTML+=`
+<tr>
+
+<td>${tanggal}</td>
+
+<td>${d.nickname||"-"}</td>
+
+<td>Rp ${nominal.toLocaleString("id-ID")}</td>
+
+<td>${d.metode||"-"}</td>
+
+<td>${d.status}</td>
+
+<td>
+
+<button class="btn green"
+onclick="approveDeposit('${doc.id}')">
+✅
+</button>
+
+<button class="btn red"
+onclick="rejectDeposit('${doc.id}')">
+❌
+</button>
+
+</td>
+
+</tr>
+`;
+
+});
+
+document.getElementById("depPending").innerHTML=pending;
+document.getElementById("depSuccess").innerHTML=success;
+document.getElementById("depReject").innerHTML=reject;
+document.getElementById("depNominal").innerHTML=
+"Rp "+totalNominal.toLocaleString("id-ID");
+
+if(snap.empty){
+
+tbody.innerHTML=`
+<tr>
+<td colspan="6">
+Belum ada data deposit.
+</td>
+</tr>
+`;
+
+}
+
+});
+
+}
+
+loadDeposit();
+async function approveDeposit(id){
+
+try{
+
+const ref=db.collection("deposit").doc(id);
+
+const snap=await ref.get();
+
+if(!snap.exists){
+
+alert("Data tidak ditemukan.");
+return;
+
+}
+
+const data=snap.data();
+
+if(data.status==="Success"){
+
+alert("Deposit sudah pernah diproses.");
+return;
+
+}
+
+const uid=data.uid;
+
+const nominal=Number(data.nominal||0);
+
+const playerRef=db.collection("players").doc(uid);
+
+await db.runTransaction(async(tx)=>{
+
+const player=await tx.get(playerRef);
+
+if(!player.exists){
+
+throw "Player tidak ditemukan";
+
+}
+
+const p=player.data();
+
+const coin=Number(p.wallet?.coin||0);
+
+tx.update(playerRef,{
+
+"wallet.coin":coin+nominal
+
+});
+
+tx.update(ref,{
+
+status:"Success",
+
+approvedAt:firebase.firestore.FieldValue.serverTimestamp(),
+
+approvedBy:auth.currentUser.email
+
+});
+
+});
+
+alert("Deposit berhasil di-approve.");
+
+}catch(err){
+
+alert(err);
+
+console.error(err);
+
+}
+
+}
+
+// ==========================
+// LOAD WITHDRAW
+// ==========================
+
+function loadWithdraw(){
+
+db.collection("withdraw")
+.orderBy("createdAt","desc")
+.onSnapshot((snap)=>{
+
+const tbody=document.getElementById("withdrawTable");
+
+tbody.innerHTML="";
+
+if(snap.empty){
+
+tbody.innerHTML=`
+<tr>
+<td colspan="4">
+Belum ada data withdraw.
+</td>
+</tr>
+`;
+
+return;
+
+}
+
+snap.forEach(doc=>{
+
+const d=doc.data();
+
+tbody.innerHTML+=`
+<tr>
+
+<td>${d.nickname||"-"}</td>
+
+<td>Rp ${Number(d.nominal||0).toLocaleString("id-ID")}</td>
+
+<td>${d.status||"Pending"}</td>
+
+<td>
+
+<button class="btn green"
+onclick="approveWithdraw('${doc.id}')">
+✅
+</button>
+
+<button class="btn red"
+onclick="rejectWithdraw('${doc.id}')">
+❌
+</button>
+
+</td>
+
+</tr>
+`;
+
+});
+
+});
+
+}
+
+loadWithdraw();
+
+async function approveWithdraw(id){
+
+try{
+
+const ref=db.collection("withdraw").doc(id);
+
+const snap=await ref.get();
+
+if(!snap.exists){
+
+alert("Data tidak ditemukan.");
+return;
+
+}
+
+const data=snap.data();
+
+if(data.status==="Success"){
+
+alert("Withdraw sudah diproses.");
+return;
+
+}
+
+const uid=data.uid;
+const nominal=Number(data.nominal||0);
+
+const playerRef=db.collection("players").doc(uid);
+
+await db.runTransaction(async(tx)=>{
+
+const player=await tx.get(playerRef);
+
+if(!player.exists()) throw "Player tidak ditemukan";
+
+const p=player.data();
+
+const coin=Number(p.wallet?.coin||0);
+
+if(coin<nominal){
+
+throw "Saldo Coin tidak mencukupi";
+
+}
+
+tx.update(playerRef,{
+"wallet.coin":coin-nominal
+});
+
+tx.update(ref,{
+status:"Success",
+approvedAt:firebase.firestore.FieldValue.serverTimestamp(),
+approvedBy:auth.currentUser.email
+});
+
+});
+
+alert("Withdraw berhasil.");
+
+}catch(e){
+
+alert(e);
+
+}
+
+}
+async function rejectWithdraw(id){
+
+await db.collection("withdraw")
+.doc(id)
+.update({
+
+status:"Reject",
+
+rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),
+
+rejectedBy:auth.currentUser.email
+
+});
+
+alert("Withdraw ditolak.");
+
+}
 </script>
 
 </body>
