@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Wallet - Legends Portal</title>
+
+<link rel="stylesheet" href="wallet.css">
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+</head>
+<body>
+
+<div class="container">
+
+<header>
+
+<button onclick="location.href='portal.html'" class="back">
+←
+</button>
+
+<h2>💰 WALLET</h2>
+
+</header>
+
+<div class="saldoBox">
+
+<h3>Saldo Coin</h3>
+
+<div id="saldoCoin">
+0
+</div>
+
+</div>
+
+<div class="tabs">
+
+<button id="btnDeposit" class="active">
+Deposit
+</button>
+
+<button id="btnWithdraw">
+Withdraw
+</button>
+
+</div>
+
+<!-- ================= DEPOSIT ================= -->
+
+<div id="depositPage">
+
+<h3>Metode Deposit</h3>
+
+<select id="metode">
+
+<option value="Transfer">Transfer Bank</option>
+
+<option value="QRIS">QRIS</option>
+
+</select>
+
+<div id="bankArea">
+
+<h4>Transfer Bank</h4>
+
+<select id="bankTujuan">
+
+<option value="Mandiri">
+Bank Mandiri
+</option>
+
+<option value="BCA">
+Bank BCA
+</option>
+
+<option value="BRI">
+Bank BRI
+</option>
+
+<option value="SeaBank">
+SeaBank
+</option>
+
+<option value="Dana">
+DANA / GoPay
+</option>
+
+</select>
+
+<div class="rekening">
+
+<p>Nama</p>
+
+<b id="namaTujuan">
+YUDI ALIYUDIN
+</b>
+
+<p>Nomor Rekening</p>
+
+<b id="noRek">
+1340033268904
+</b>
+
+<button id="copyRekening">
+COPY
+</button>
+
+</div>
+
+</div>
+
+<div id="qrisArea" style="display:none">
+
+<img src="img/qris.png" width="220">
+
+</div>
+
+<input
+type="number"
+id="nominalDeposit"
+placeholder="Nominal Deposit">
+
+<button id="requestDeposit">
+
+REQUEST DEPOSIT
+
+</button>
+
+</div>
+
+<!-- ================= WITHDRAW ================= -->
+
+<div id="withdrawPage" style="display:none">
+
+<h3>Rekening Terdaftar</h3>
+
+<p>Bank</p>
+
+<div id="bankUser">-</div>
+
+<p>Nama Rekening</p>
+
+<div id="namaUser">-</div>
+
+<p>Nomor Rekening</p>
+
+<div id="rekeningUser">-</div>
+
+<input
+type="number"
+id="nominalWithdraw"
+placeholder="Nominal Withdraw">
+
+<button id="requestWithdraw">
+
+REQUEST WITHDRAW
+
+</button>
+
+</div>
+
+<!-- ================= STATUS ================= -->
+
+<div id="pendingArea">
+
+<h3>Status Transaksi</h3>
+
+<div id="pendingList">
+
+Belum ada transaksi.
+
+</div>
+
+</div>
+
+</div>
+
+<script src="wallet.js"></script>
+
+</body>
+</html>
