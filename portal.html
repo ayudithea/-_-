@@ -72,10 +72,61 @@ cursor:pointer;
 .badge{position:absolute;left:10px;top:10px;background:#e10000;color:#fff;padding:5px 10px;border-radius:10px;font-size:12px}
 .info{padding:14px}.title{font-size:28px;font-weight:bold;margin-bottom:4px}.sub{color:#bbb;margin-bottom:14px}
 .play{display:block;text-decoration:none;text-align:center;background:linear-gradient(#ffe77d,#eab500);color:#000;font-weight:bold;padding:12px;border-radius:12px}
+.sideMenu{
+    position:fixed;
+    top:0;
+    left:-270px;
+    width:260px;
+    height:100%;
+    background:#111;
+    border-right:2px solid #d4a500;
+    transition:.3s;
+    z-index:9999;
+    padding-top:70px;
+}
+
+.sideMenu.show{
+    left:0;
+}
+
+.sideMenu a{
+    display:block;
+    padding:16px 20px;
+    color:#fff;
+    text-decoration:none;
+    border-bottom:1px solid #333;
+    font-size:17px;
+}
+
+.sideMenu a:hover{
+    background:#d4a500;
+    color:#000;
+}
+
+.menuClose{
+    position:absolute;
+    top:15px;
+    right:15px;
+    font-size:28px;
+    cursor:pointer;
+    color:#ffd84d;
+}
+
+.overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    display:none;
+    z-index:9998;
+}
+
+.overlay.show{
+    display:block;
+}
 </style></head><body>
 <header>
 
-<div class="menu">☰</div>
+<div class="menu" onclick="openMenu()">☰</div>
 
 <div class="logo">
 LEGENDS<br>PORTAL
@@ -89,6 +140,30 @@ LEGENDS<br>PORTAL
 </div>
 
 </header>
+<div id="overlay" class="overlay" onclick="closeMenu()"></div>
+
+<div id="sideMenu" class="sideMenu">
+
+<div class="menuClose" onclick="closeMenu()">✕</div>
+
+<a href="portal.html">🏠 Beranda</a>
+
+<a href="deposit.html">💰 Deposit</a>
+
+<a href="widraw.html">💸 Withdraw</a>
+
+<a href="transaksi.html">📜 Riwayat Transaksi</a>
+
+<a href="https://t.me/Leg" target="_blank">
+💬 Live Chat
+</a>
+
+<a href="about.html">ℹ️ About</a>
+
+<a href="#" onclick="logout()">
+🚪 Logout
+</a>
+</div>
 <div id="wallet" style="
 margin:4px 0px 0px 15px;
 padding:8px;
@@ -263,5 +338,14 @@ async function savePlayer(){
     }
 
 }  
+function openMenu(){
+    document.getElementById("sideMenu").classList.add("show");
+    document.getElementById("overlay").classList.add("show");
+}
+
+function closeMenu(){
+    document.getElementById("sideMenu").classList.remove("show");
+    document.getElementById("overlay").classList.remove("show");
+}
 
 </script> </body></html>
