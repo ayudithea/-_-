@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wallet - Legends Portal</title>
+<style>
+body{margin:0;font-family:Arial;background:#0b1220;color:#fff}.container{max-width:520px;margin:auto;padding:16px}
+.card{background:#182235;border-radius:14px;padding:16px;margin-bottom:16px}.tabs{display:flex;gap:8px}
+.tabs button{flex:1;padding:12px;border:0;border-radius:10px}.active{background:#ffd54a}.hidden{display:none}
+input,select{width:100%;padding:10px;margin:6px 0 12px;border-radius:8px}.btn{width:100%;padding:12px;background:#2563eb;color:#fff;border:0;border-radius:10px}
+</style></head><body>
+<div class="container">
+<h2>💰 Wallet</h2>
+<div class="card"><small>Saldo Coin</small><h1 id="saldo">0</h1></div>
+<div class="tabs"><button id="btnDep" class="active">Deposit</button><button id="btnWd">Withdraw</button></div>
+<div id="deposit" class="card">
+<select id="bank"><option>Mandiri</option><option>BCA</option><option>BRI</option><option>SeaBank</option><option>DANA / GoPay</option></select>
+<div>YUDI ALIYUDIN</div><div id="rekening">1340033268904</div>
+<input type="number" placeholder="Nominal Deposit"><button class="btn">REQUEST DEPOSIT</button>
+</div>
+<div id="withdraw" class="card hidden">
+<input id="bankUser" placeholder="Bank" readonly>
+<input id="namaUser" placeholder="Nama Rekening" readonly>
+<input id="rekUser" placeholder="No Rekening" readonly>
+<input type="number" placeholder="Nominal Withdraw"><button class="btn">REQUEST WITHDRAW</button>
+</div>
+<div class="card"><h3>Status Transaksi</h3><div>Belum ada transaksi.</div></div>
+</div>
+<script>
+const rekeningMap={Mandiri:"1340033268904",BCA:"4180734771",BRI:"004601060489505",SeaBank:"901341445605","DANA / GoPay":"082319264646"};
+const bank=document.getElementById("bank"),rek=document.getElementById("rekening");
+document.getElementById("btnDep").onclick=()=>{deposit.classList.remove("hidden");withdraw.classList.add("hidden");};
+document.getElementById("btnWd").onclick=()=>{withdraw.classList.remove("hidden");deposit.classList.add("hidden");};
+bank.onchange=()=>rek.textContent=rekeningMap[bank.value];
+</script>
+</body></html>
