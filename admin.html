@@ -1196,17 +1196,18 @@ tbody.innerHTML+=`
 <td>${d.status||"Pending"}</td>
 
 <td>
-
-<button class="btn green"
-onclick="approveWithdraw('${doc.id}')">
-✅
-</button>
-
-<button class="btn red"
-onclick="rejectWithdraw('${doc.id}')">
-❌
-</button>
-
+${
+    d.status === "Pending"
+    ? `
+        <button class="btn green" onclick="approveWithdraw('${doc.id}')">✅</button>
+        <button class="btn red" onclick="rejectWithdraw('${doc.id}')">❌</button>
+      `
+    : d.status === "Success"
+    ? `<span style="color:#00ff66;font-weight:bold;">✅ Success</span>`
+    : d.status === "Reject"
+    ? `<span style="color:#ff4444;font-weight:bold;">❌ Ditolak</span>`
+    : "-"
+}
 </td>
 
 </tr>
