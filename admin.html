@@ -1238,11 +1238,9 @@ return;
 
 const data=snap.data();
 
-if(data.status==="Success"){
-
-alert("Withdraw sudah diproses.");
-return;
-
+if(data.status !== "Pending"){
+    alert("Withdraw sudah diproses.");
+    return;
 }
 await ref.update({
     status:"Success",
