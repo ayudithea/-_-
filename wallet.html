@@ -403,7 +403,6 @@ const rekeningMap = {
 
 rekening.innerHTML = rekeningMap[bank.value];
 
-</script>
 
 // ==========================
 // LOGIN & AMBIL DATA PLAYER
@@ -558,59 +557,6 @@ btnRequestDep.onclick = async () => {
 
 };
 
-// ==========================
-// RIWAYAT DEPOSIT
-// ==========================
-
-function loadDeposit(){
-
-    if(!auth.currentUser) return;
-
-    db.collection("deposit")
-    .where("uid","==",auth.currentUser.uid)
-    .orderBy("createdAt","desc")
-    .onSnapshot((snap)=>{
-
-        if(snap.empty){
-
-            statusList.innerHTML="Belum ada transaksi.";
-
-            return;
-
-        }
-
-        let html="";
-
-        snap.forEach(doc=>{
-
-            const d=doc.data();
-
-            html+=`
-
-            <div class="status-item">
-
-            <b>Deposit</b><br>
-
-            Nominal :
-            Rp ${Number(d.nominal).toLocaleString("id-ID")}<br>
-
-            Metode :
-            ${d.bankTujuan}<br>
-
-            Status :
-            <b>${d.status}</b>
-
-            </div>
-
-            `;
-
-        });
-
-        statusList.innerHTML=html;
-
-    });
-
-}
 
 
 // ==========================
@@ -788,3 +734,7 @@ function listenWallet(){
     });
 
 }
+</script>
+
+</body>
+</html>
