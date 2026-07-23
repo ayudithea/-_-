@@ -1244,64 +1244,10 @@ return;
 
 }
 
-const data=snap.data();
-
-if(data.status==="Success"){
-
-alert("Withdraw sudah diproses.");
-return;
-
-}
-
-const uid=data.uid;
-const nominal=Number(data.nominal||0);
-
-const playerRef=db.collection("players").doc(uid);
-
-await db.runTransaction(async(tx)=>{
-
-    const player = await tx.get(playerRef);
-
-    if(!player.exists){
-        throw "Player tidak ditemukan";
-    }
-
-    const p = player.data();
-
-    const coin = Number(p.wallet?.coin || 0);
-
-    tx.update(playerRef,{
-    "wallet.coin": coin - nominal
-});
-
-    tx.update(ref,{
-        status:"Success",
-        approvedAt:firebase.firestore.FieldValue.serverTimestamp(),
-        approvedBy:auth.currentUser.email
-    });
-
-});
-alert("Withdraw berhasil.");
-
-}catch(e){
-
-alert(e);
-
-}
-
-}
-async function rejectWithdraw(id){
-
-await db.collection("withdraw")
-.doc(id)
-.update({
-
-status:"Reject",
-
-rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),
-
-rejectedBy:auth.currentUser.email
-
+await ref.update({
+    status:"Success",
+    approvedAt:firebase.firestore.FieldValue.serverTimestamp(),
+    approvedBy:auth.currentUser.email
 });
 
 alert("Withdraw ditolak.");
