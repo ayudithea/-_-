@@ -50,11 +50,21 @@ display:flex;
 min-height:calc(100vh - 70px);  
 }  
   
-.sidebar{  
-width:240px;  
-background:#182235;  
-padding:15px;  
-}  
+.sidebar{
+position:fixed;
+top:70px;
+left:-260px;
+width:240px;
+height:calc(100vh - 70px);
+background:#182235;
+padding:15px;
+overflow-y:auto;
+transition:.3s;
+z-index:999;
+}
+.sidebar.show{
+left:0;
+}
   
 .sidebar button{  
 width:100%;  
@@ -79,11 +89,12 @@ color:#000;
 font-weight:bold;  
 }  
   
-.content{  
-flex:1;  
-padding:20px;  
-overflow:auto;  
-}  
+.content{
+width:100%;
+flex:1;
+padding:20px;
+overflow:auto;
+}
   
 .card-grid{  
 display:grid;  
@@ -192,7 +203,9 @@ display:none;
   
   
 </style>  </head>  <body>  <header>  
-<h2>👑 Legends Portal Admin</h2>  
+<button id="btnMenu" class="btn blue">☰</button>
+
+<h2>👑 Legends Portal Admin</h2>
 <div style="display:flex;align-items:center;gap:12px;">  <button class="btn blue" id="btnRefresh">  
 🔄 Refresh  
 </button>  <button class="btn yellow" id="btnNotif">  
@@ -395,7 +408,12 @@ const pageBroadcast=document.getElementById("pageBroadcast");
 const pageSetting=document.getElementById("pageSetting");  
   
 const pageLog=document.getElementById("pageLog");  
-  
+  const btnMenu=document.getElementById("btnMenu");
+const sidebar=document.querySelector(".sidebar");
+
+btnMenu.onclick=()=>{
+    sidebar.classList.toggle("show");
+};
   
 // ==========================  
 // LOGOUT  
@@ -452,6 +470,7 @@ menuSetting.classList.remove("active");
   
 menuLog.classList.remove("active");  
   
+sidebar.classList.remove("show");
 }  
   
 menuDashboard.onclick=()=>{  
