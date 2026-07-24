@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
+<head><!-- PLAYABLE_TOUCH_PATCH_V1 --><script>
+(function() {
+  if (window.__playableTouchPatchInstalled) return;
+  window.__playableTouchPatchInstalled = true;
+  var origAdd = EventTarget.prototype.addEventListener;
+  var blockedTypes = { touchstart: 1, touchmove: 1, wheel: 1 };
+  EventTarget.prototype.addEventListener = function(type, listener, options) {
+    if (blockedTypes[type]) {
+      if (options === undefined || options === null) {
+        options = { passive: true };
+      } else if (typeof options === 'boolean') {
+        options = { capture: options, passive: true };
+      } else {
+        options = Object.assign({}, options, { passive: true });
+      }
+    }
+    return origAdd.call(this, type, listener, options);
+  };
+})();
+</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Dashboard - Legends Portal</title>
@@ -73,8 +92,30 @@ table{display:block;overflow-x:auto;white-space:nowrap;}input,select{font-size:1
 </div>
 <div class="content">
 <div id="pageDashboard"><div class="card-grid"><div class="card"><small>Total Player</small><h1 id="totalPlayer">0</h1></div><div class="card"><small>Coin Beredar</small><h1 id="totalCoin">0</h1></div><div class="card"><small>Deposit Pending</small><h1 id="depositPending">0</h1></div><div class="card"><small>Withdraw Pending</small><h1 id="withdrawPending">0</h1></div></div><div class="section"><h3>Aktivitas Hari Ini</h3><p>Dashboard akan menampilkan aktivitas realtime.</p></div></div>
-<div id="pageDeposit" class="hidden"><div class="card-grid"><div class="card"><small>Pending</small><h1 id="depPending">0</h1></div><div class="card"><small>Success</small><h1 id="depSuccess">0</h1></div><div class="card"><small>Reject</small><h1 id="depReject">0</h1></div><div class="card"><small>Total Deposit</small><h1 id="depNominal">Rp0</h1></div></div><div class="section"><h3>Kelola Deposit - Hanya Akun Terdaftar</h3><div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px;"><input type="text" id="cariDeposit" placeholder="Cari Player / Email" style="flex:2;"><select id="filterDeposit" style="flex:1;"><option value="Semua">Semua</option><option value="Pending">Pending</option><option value="Success">Success</option><option value="Reject">Reject</option></select></div><table><thead><tr><th>Tanggal</th><th>Player</th><th>Nominal</th><th>Metode</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="depositTable"><tr><td colspan="6">Belum ada data.</td></tr></tbody></table></div></div>
-<div id="pageWithdraw" class="hidden"><div class="section"><h3>Daftar Withdraw - Hanya Akun Terdaftar</h3><table><thead><tr><th>Player</th><th>Nominal</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="withdrawTable"><tr><td colspan="4">Belum ada data withdraw.</td></tr></tbody></table></div></div>
+
+<div id="pageDeposit" class="hidden">
+<div class="card-grid"><div class="card"><small>Pending</small><h1 id="depPending">0</h1></div><div class="card"><small>Success</small><h1 id="depSuccess">0</h1></div><div class="card"><small>Reject</small><h1 id="depReject">0</h1></div><div class="card"><small>Total Deposit</small><h1 id="depNominal">Rp0</h1></div></div>
+<div class="section">
+<h3>Kelola Deposit - Hanya Akun Terdaftar</h3>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px;">
+<input type="text" id="cariDeposit" placeholder="Cari Nickname / Email" style="flex:2;">
+<select id="filterDeposit" style="flex:1;"><option value="Semua">Semua</option><option value="Pending">Pending</option><option value="Success">Success</option><option value="Reject">Reject</option></select>
+</div>
+<table><thead><tr><th>Tanggal</th><th>Player (Email)</th><th>Nominal</th><th>Metode</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="depositTable"><tr><td colspan="6">Belum ada data.</td></tr></tbody></table>
+</div>
+</div>
+
+<div id="pageWithdraw" class="hidden">
+<div class="section">
+<h3>Daftar Withdraw - Hanya Akun Terdaftar</h3>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px;">
+<input type="text" id="cariWithdraw" placeholder="Cari Nickname / Email" style="flex:2;">
+<select id="filterWithdraw" style="flex:1;"><option value="Semua">Semua</option><option value="Pending">Pending</option><option value="Success">Success</option><option value="Reject">Reject</option></select>
+</div>
+<table><thead><tr><th>Player (Email)</th><th>Nominal</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="withdrawTable"><tr><td colspan="4">Belum ada data withdraw.</td></tr></tbody></table>
+</div>
+</div>
+
 <div id="pagePlayer" class="hidden"><div class="section"><h3>Data Player</h3><input type="text" id="searchPlayer" placeholder="Cari nickname atau email"><table><thead><tr><th>Nickname</th><th>Email</th><th>Coin</th><th>Aksi</th></tr></thead><tbody id="playerTable"><tr><td colspan="4">Memuat data player...</td></tr></tbody></table></div></div>
 <div id="pageLaporan" class="hidden"><div class="section"><h3>Laporan Player</h3><div id="laporanArea">Pilih player untuk melihat laporan.</div></div></div>
 <div id="pageWallet" class="hidden"><div class="section"><h3>Mutasi Wallet</h3><div id="walletArea">Belum ada data.</div></div></div>
@@ -183,14 +224,23 @@ menuSetting.onclick=()=>{ hideAll(); resetMenu(); pageSetting.classList.remove("
 menuLog.onclick=()=>{ hideAll(); resetMenu(); pageLog.classList.remove("hidden"); menuLog.classList.add("active"); };
 
 // ==========================
-// CACHE PLAYER VALID - UNTUK FILTER DEPOSIT & WITHDRAW
+// CACHE PLAYER VALID - UNTUK FILTER + TAMPIL EMAIL
 // ==========================
-let playerIdSet = new Set();
+let playerCache = new Map();
 let isPlayerCacheReady = false;
+
 db.collection("players").onSnapshot(snap=>{
-  playerIdSet.clear();
-  snap.forEach(doc=> playerIdSet.add(doc.id));
+  playerCache.clear();
+  snap.forEach(doc=>{
+    const p = doc.data();
+    playerCache.set(doc.id, {
+      email: p.profile?.email || p.email || "-",
+      nickname: p.profile?.nickname || p.nickname || p.displayName || "-"
+    });
+  });
   isPlayerCacheReady = true;
+  renderDepositTable();
+  renderWithdrawTable();
 });
 
 function loadNotifikasi(){
@@ -221,53 +271,69 @@ function loadDashboard(){
 loadDashboard();
 
 // ==========================
-// LOAD DEPOSIT - FILTER AKUN TIDAK TERDAFTAR
+// DEPOSIT - FILTER + EMAIL + SEARCH
 // ==========================
-function loadDeposit(){
-db.collection("deposit").orderBy("createdAt","desc").onSnapshot((snap)=>{
+let allDepositData = [];
+function renderDepositTable(){
 const tbody=document.getElementById("depositTable");
+if(!tbody) return;
+const keyword = (document.getElementById("cariDeposit")?.value || "").toLowerCase();
+const statusFilter = document.getElementById("filterDeposit")?.value || "Semua";
 tbody.innerHTML="";
 let pending=0,success=0,reject=0,totalNominal=0;
 let hasValidData = false;
 
-snap.forEach(doc=>{
-const d=doc.data();
-if(!d.uid) return;
-if(isPlayerCacheReady && !playerIdSet.has(d.uid)) return; // BUANG HISTORY AKUN TIDAK TERDAFTAR
-
-hasValidData = true;
-const tanggal=d.createdAt ? d.createdAt.toDate().toLocaleString("id-ID") : "-";
+allDepositData.forEach(item=>{
+const d=item.data;
+const docId=item.id;
+const info = playerCache.get(d.uid) || {email:"Akun Dihapus", nickname:d.nickname||"-"};
 const nominal=Number(d.nominal||0);
 totalNominal+=nominal;
 if(d.status==="Pending") pending++;
 if(d.status==="Success") success++;
 if(d.status==="Reject") reject++;
 
+if(statusFilter !== "Semua" && d.status !== statusFilter) return;
+const searchTarget = `${d.nickname||""} ${info.nickname||""} ${info.email||""} ${d.uid||""} ${d.metode||""}`.toLowerCase();
+if(keyword && !searchTarget.includes(keyword)) return;
+
+hasValidData = true;
+const tanggal=d.createdAt ? d.createdAt.toDate().toLocaleString("id-ID") : "-";
 tbody.innerHTML+=`
 <tr>
 <td>${tanggal}</td>
-<td>${d.nickname||"-"}<br><small style="font-size:11px;color:#8aa0c7">${d.uid.substring(0,8)}...</small></td>
+<td style="text-align:left"><b>${d.nickname||info.nickname||"-"}</b><br><span style="color:#ffd54a;font-size:12px">${info.email||"-"}</span><br><small style="font-size:10px;color:#8aa0c7">${d.uid.substring(0,12)}...</small></td>
 <td>Rp ${nominal.toLocaleString("id-ID")}</td>
 <td>${d.metode||"-"}</td>
 <td>${d.status}</td>
-<td>
-${ d.status==="Pending" ? `<button class="btn green" onclick="approveDeposit('${doc.id}')">✅</button> <button class="btn red" onclick="rejectDeposit('${doc.id}')">❌</button>` : d.status==="Success" ? "✅ Success" : "❌ Reject"}
-</td>
-</tr>
-`;
+<td>${ d.status==="Pending" ? `<button class="btn green" onclick="approveDeposit('${docId}')">✅</button> <button class="btn red" onclick="rejectDeposit('${docId}')">❌</button>` : d.status==="Success" ? "✅ Success" : "❌ Reject"}</td>
+</tr>`;
 });
 
 document.getElementById("depPending").innerHTML=pending;
 document.getElementById("depSuccess").innerHTML=success;
 document.getElementById("depReject").innerHTML=reject;
 document.getElementById("depNominal").innerHTML="Rp "+totalNominal.toLocaleString("id-ID");
-
 if(!hasValidData){
-tbody.innerHTML=`<tr><td colspan="6">Tidak ada data deposit dari akun terdaftar.</td></tr>`;
+tbody.innerHTML=`<tr><td colspan="6">Tidak ada data deposit untuk "${keyword || statusFilter}" dari akun terdaftar.</td></tr>`;
 }
+}
+
+function loadDeposit(){
+db.collection("deposit").orderBy("createdAt","desc").onSnapshot((snap)=>{
+allDepositData=[];
+snap.forEach(doc=>{
+const d=doc.data();
+if(!d.uid) return;
+// TAMPILKAN SEMUA - jangan buang history meski akun sudah dihapus
+allDepositData.push({id:doc.id, data:d});
+});
+renderDepositTable();
 });
 }
 loadDeposit();
+document.getElementById("cariDeposit")?.addEventListener("input", renderDepositTable);
+document.getElementById("filterDeposit")?.addEventListener("change", renderDepositTable);
 
 async function rejectDeposit(id){
     try{
@@ -281,7 +347,6 @@ async function rejectDeposit(id){
         alert("Deposit ditolak.");
     }catch(err){ console.error(err); alert("Gagal menolak deposit."); }
 }
-
 async function approveDeposit(id){
 try{
     const ref = db.collection("deposit").doc(id);
@@ -305,38 +370,51 @@ try{
 }
 
 // ==========================
-// LOAD WITHDRAW - FILTER AKUN TIDAK TERDAFTAR
+// WITHDRAW - FILTER + EMAIL + SEARCH
 // ==========================
-function loadWithdraw(){
-db.collection("withdraw").orderBy("createdAt","desc").onSnapshot((snap)=>{
+let allWithdrawData = [];
+function renderWithdrawTable(){
 const tbody=document.getElementById("withdrawTable");
+if(!tbody) return;
+const keyword = (document.getElementById("cariWithdraw")?.value || "").toLowerCase();
+const statusFilter = document.getElementById("filterWithdraw")?.value || "Semua";
 tbody.innerHTML="";
 let hasValidData = false;
-
-snap.forEach(doc=>{
-const d=doc.data();
-if(!d.uid) return;
-if(isPlayerCacheReady && !playerIdSet.has(d.uid)) return; // BUANG HISTORY AKUN TIDAK TERDAFTAR
-
+allWithdrawData.forEach(item=>{
+const d=item.data;
+const docId=item.id;
+const info = playerCache.get(d.uid) || {email:"Akun Dihapus", nickname:d.nickname||"-"};
+if(statusFilter !== "Semua" && d.status !== statusFilter) return;
+const searchTarget = `${d.nickname||""} ${info.nickname||""} ${info.email||""} ${d.uid||""}`.toLowerCase();
+if(keyword && !searchTarget.includes(keyword)) return;
 hasValidData = true;
 tbody.innerHTML+=`
 <tr>
-<td>${d.nickname||"-"}<br><small style="font-size:11px;color:#8aa0c7">${d.uid.substring(0,8)}...</small></td>
+<td style="text-align:left"><b>${d.nickname||info.nickname||"-"}</b><br><span style="color:#ffd54a;font-size:12px">${info.email||"-"}</span><br><small style="font-size:10px;color:#8aa0c7">${d.uid.substring(0,12)}...</small></td>
 <td>Rp ${Number(d.nominal||0).toLocaleString("id-ID")}</td>
 <td>${d.status||"Pending"}</td>
-<td>
-${ d.status==="Pending" ? `<button class="btn green" onclick="approveWithdraw('${doc.id}')">✅</button> <button class="btn red" onclick="rejectWithdraw('${doc.id}')">❌</button>` : d.status==="Success" ? "✅ Success" : "❌ Reject"}
-</td>
-</tr>
-`;
+<td>${ d.status==="Pending" ? `<button class="btn green" onclick="approveWithdraw('${docId}')">✅</button> <button class="btn red" onclick="rejectWithdraw('${docId}')">❌</button>` : d.status==="Success" ? "✅ Success" : "❌ Reject"}</td>
+</tr>`;
 });
-
 if(!hasValidData){
-tbody.innerHTML=`<tr><td colspan="4">Tidak ada data withdraw dari akun terdaftar.</td></tr>`;
+tbody.innerHTML=`<tr><td colspan="4">Tidak ada data withdraw untuk "${keyword || statusFilter}" dari akun terdaftar.</td></tr>`;
 }
+}
+function loadWithdraw(){
+db.collection("withdraw").orderBy("createdAt","desc").onSnapshot((snap)=>{
+allWithdrawData=[];
+snap.forEach(doc=>{
+const d=doc.data();
+if(!d.uid) return;
+// TAMPILKAN SEMUA - jangan buang history meski akun sudah dihapus
+allWithdrawData.push({id:doc.id, data:d});
+});
+renderWithdrawTable();
 });
 }
 loadWithdraw();
+document.getElementById("cariWithdraw")?.addEventListener("input", renderWithdrawTable);
+document.getElementById("filterWithdraw")?.addEventListener("change", renderWithdrawTable);
 
 async function approveWithdraw(id){
 try{
@@ -345,12 +423,11 @@ const snap=await ref.get();
 if(!snap.exists){ alert("Data tidak ditemukan."); return; }
 const data=snap.data();
 if(data.status!=="Pending"){ alert("Withdraw sudah diproses."); return; }
-if(isPlayerCacheReady && !playerIdSet.has(data.uid)){ alert("Akun player sudah tidak terdaftar!"); return; }
+if(isPlayerCacheReady && !playerCache.has(data.uid)){ alert("Akun player sudah tidak terdaftar!"); return; }
 await ref.update({ status:"Success", approvedAt:firebase.firestore.FieldValue.serverTimestamp(), approvedBy:"Administrator" });
 alert("Withdraw berhasil.");
 }catch(e){ console.error(e); alert(e); }
 }
-
 async function rejectWithdraw(id){
     try{
         const ref = db.collection("withdraw").doc(id);
