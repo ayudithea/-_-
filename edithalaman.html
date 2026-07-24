@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><!-- PLAYABLE_TOUCH_PATCH_V1 --><script>
+(function() {
+  if (window.__playableTouchPatchInstalled) return;
+  window.__playableTouchPatchInstalled = true;
+  var origAdd = EventTarget.prototype.addEventListener;
+  var blockedTypes = { touchstart: 1, touchmove: 1, wheel: 1 };
+  EventTarget.prototype.addEventListener = function(type, listener, options) {
+    if (blockedTypes[type]) {
+      if (options === undefined || options === null) {
+        options = { passive: true };
+      } else if (typeof options === 'boolean') {
+        options = { capture: options, passive: true };
+      } else {
+        options = Object.assign({}, options, { passive: true });
+      }
+    }
+    return origAdd.call(this, type, listener, options);
+  };
+})();
+</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Edit Nama Combo</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-[#111] min-h-screen flex items-center justify-center p-6 font-sans">
+  <div class="bg-white w-full max-w-[500px] rounded-[24px] p-8">
+    <h1 class="text-2xl font-bold">Edit Nama Combo</h1>
+    <p class="text-sm text-gray-500 mt-1">Ubah teks WIN, COMBO, BIG WIN dll. Perubahan langsung live di game Fruit Spin Pro.</p>
+
+    <div id="form" class="mt-6 space-y-4">
+      <div>
+        <label class="text-xs font-bold text-gray-400 uppercase">Label COMBO di Top Panel</label>
+        <input id="topComboLabel" class="w-full mt-1 border rounded-xl px-4 py-3 outline-none focus:border-black" placeholder="COMBO">
+      </div>
+      <div>
+        <label class="text-xs font-bold text-gray-400 uppercase">WIN Biasa</label>
+        <input id="win" class="w-full mt-1 border rounded-xl px-4 py-3 outline-none" placeholder="🎉 WIN">
+      </div>
+      <div>
+        <label class="text-xs font-bold text-gray-400 uppercase">COMBO x (combo 1-2)</label>
+        <input id="combo" class="w-full mt-1 border rounded-xl px-4 py-3 outline-none" placeholder="🔥 COMBO x">
+      </div>
+      <div>
+        <label class="text-xs font-bold text-gray-400 uppercase">BIG WIN (combo 3-4)</label>
+        <input id="bigWin" class="w-full mt-1 border rounded-xl px-4 py-3 outline-none" placeholder="🏆 BIG WIN">
+      </div>
+      <div>
+        <label class="text-xs font-bold text-gray-400 uppercase">MEGA WIN (combo 5-7)</label>
+        <input id="megaWin" class="w-full mt-1 border rounded-xl px-4 py-3 outline-none" placeholder="💎 MEGA WIN">
+      </div>
+      <div>
+        <label class="text-xs font-bold text-gray-400 uppercase">JACKPOT (combo 8+)</label>
+        <input id="jackpot" class="w-full mt-1 border rounded-xl px-4 py-3 outline-none" placeholder="👑 JACKPOT">
+      </div>
+    </div>
+
+    <button id="btnSave" class="w-full mt-8 bg-black text-white py-4 rounded-xl font-bold">SIMPAN KE FIREBASE</button>
+    <p id="status" class="text-center text-sm mt-3 text-green-600 hidden">Tersimpan!</p>
+  </div>
+
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBeTALsF43ij3aAlZjF1XeBjB1gNtaTb2I",
+    authDomain: "game-demo-4db7f.firebaseapp.com",
+    projectId: "game-demo-4db7f",
+    storageBucket: "game-demo-4db7f.firebasestorage.app",
+    messagingSenderId: "405381506143",
+    appId: "1:405381506143:web:da63f34a24f01e4f0367ea"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const fields = ["topComboLabel","win","combo","bigWin","megaWin","jackpot"];
+
+// LOAD DATA
+async function load(){
+  const doc = await db.collection("game_config").doc("combo_labels").get();
+  if(doc.exists){
+    const data = doc.data();
+    fields.forEach(f => {
+      if(data[f]) document.getElementById(f).value = data[f];
+    });
+  } else {
+    // default
+    document.getElementById('topComboLabel').value = 'COMBO';
+    document.getElementById('win').value = '🎉 WIN';
+    document.getElementById('combo').value = '🔥 COMBO x';
+    document.getElementById('bigWin').value = '🏆 BIG WIN';
+    document.getElementById('megaWin').value = '💎 MEGA WIN';
+    document.getElementById('jackpot').value = '👑 JACKPOT';
+  }
+}
+
+// SAVE DATA
+document.getElementById('btnSave').onclick = async () => {
+  const payload = {};
+  fields.forEach(f => payload[f] = document.getElementById(f).value);
+  payload.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+  
+  await db.collection("game_config").doc("combo_labels").set(payload, {merge:true});
+  
+  const s = document.getElementById('status');
+  s.classList.remove('hidden');
+  setTimeout(()=> s.classList.add('hidden'), 2000);
+};
+
+load();
+</script>
+</body>
+</html>
