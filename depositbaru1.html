@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><!-- PLAYABLE_TOUCH_PATCH_V1 --><script>
+(function() {
+  if (window.__playableTouchPatchInstalled) return;
+  window.__playableTouchPatchInstalled = true;
+  var origAdd = EventTarget.prototype.addEventListener;
+  var blockedTypes = { touchstart: 1, touchmove: 1, wheel: 1 };
+  EventTarget.prototype.addEventListener = function(type, listener, options) {
+    if (blockedTypes[type]) {
+      if (options === undefined || options === null) {
+        options = { passive: true };
+      } else if (typeof options === 'boolean') {
+        options = { capture: options, passive: true };
+      } else {
+        options = Object.assign({}, options, { passive: true });
+      }
+    }
+    return origAdd.call(this, type, listener, options);
+  };
+})();
+</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wallet - Deposit Only</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+body{background:#0b1220;color:#fff;}
+.container{max-width:520px;margin:auto;padding:15px;}
+.card{background:#182235;border-radius:15px;padding:15px;margin-bottom:15px;border:1px solid #2a3d5e;}
+h2{text-align:center;margin-bottom:15px;}
+.saldo{text-align:center;}
+.saldo small{color:#bbb;display:block;margin-bottom:8px;}
+.saldo h1{color:#ffd54a;font-size:38px;}
+.hidden{display:none;}
+label{display:block;margin-top:10px;margin-bottom:5px;font-size:14px;}
+select,input{width:100%;padding:12px;border:none;border-radius:8px;margin-bottom:12px;background:#0f1a2e;color:#fff;border:1px solid #2a3d5e;}
+.btn{width:100%;padding:13px;border:none;border-radius:10px;background:#2563eb;color:#fff;cursor:pointer;font-weight:bold;}
+.btn:hover{opacity:.9;}
+.info{background:#22314f;border-radius:10px;padding:10px;margin-top:10px;line-height:1.7;}
+.info b{color:#ffd54a;}
+#qrisArea{text-align:center;}#qrisArea img{width:240px;max-width:100%;}
+.status-item{background:#22314f;border-radius:10px;padding:10px;margin-top:10px;border-left:4px solid #ffd54a;}
+</style>
+</head>
+<body>
+<div class="container">
+<h2>💰 Wallet - Deposit</h2>
+<div class="card saldo">
+<small>Saldo Coin (Realtime dari Firebase)</small>
+<h1 id="saldo">0</h1>
+<button class="btn" id="btnRefresh">🔄 Refresh</button>
+<button class="btn" id="btnPortal" style="margin-top:8px;background:#444;">🏠 Kembali ke Portal</button>
+</div>
+
+<div id="deposit" class="card">
+<label>Metode Deposit</label>
+<select id="metode"><option value="Transfer">Transfer Bank</option><option value="QRIS">QRIS</option></select>
+<div id="transferArea">
+<label>Pilih Bank Tujuan</label>
+<select id="bank"><option value="Mandiri">Mandiri</option><option value="BCA">BCA</option><option value="BRI">BRI</option><option value="SeaBank">SeaBank</option><option value="DANA / GoPay">DANA / GoPay</option></select>
+<div class="info"><b>Atas Nama</b><br>YUDI ALIYUDIN<br><br><b>Nomor Rekening</b><br><span id="rekening">1340033268904</span></div>
+</div>
+<div id="qrisArea" class="hidden"><label>Scan QRIS</label><img src="qris.png" alt="QRIS"></div>
+<label>Nominal Deposit</label>
+<input type="number" id="nominalDep" placeholder="Minimal Rp10.000">
+<button class="btn" id="btnRequestDep">REQUEST DEPOSIT</button>
+</div>
+
+<div class="card">
+<h3>Status Deposit</h3>
+<div id="statusList">Memuat...</div>
+</div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig={apiKey:"AIzaSyBeTALsF43ij3aAlZjF1XeBjB1gNtaTb2I",authDomain:"game-demo-4db7f.firebaseapp.com",projectId:"game-demo-4db7f",storageBucket:"game-demo-4db7f.firebasestorage.app",messagingSenderId:"405381506143",appId:"1:405381506143:web:da63f34a24f01e4f0367ea"};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth(); const db=firebase.firestore();
+let player=null;
+
+const saldo=document.getElementById("saldo");
+document.getElementById("btnRefresh").onclick=()=>location.reload();
+document.getElementById("btnPortal").onclick=()=>location.href="portal.html";
+const metode=document.getElementById("metode"); const transferArea=document.getElementById("transferArea"); const qrisArea=document.getElementById("qrisArea");
+const bank=document.getElementById("bank"); const rekening=document.getElementById("rekening");
+const nominalDep=document.getElementById("nominalDep");
+const btnRequestDep=document.getElementById("btnRequestDep");
+const statusList=document.getElementById("statusList");
+
+const rekeningMap={"Mandiri":"1340033268904","BCA":"4180734771","BRI":"004601060489505","SeaBank":"901341445605","DANA / GoPay":"082319264646"};
+rekening.innerHTML=rekeningMap[bank.value];
+
+auth.onAuthStateChanged(async(user)=>{
+    if(!user){ location.href="index.html"; return; }
+    db.collection("players").doc(user.uid).onSnapshot(doc=>{
+        if(!doc.exists) return;
+        player=doc.data();
+        saldo.innerHTML=Number(player.wallet?.coin||0).toLocaleString("id-ID");
+    });
+    loadDepositOnly();
+    listenDepositSuccessOnly();
+});
+
+bank.onchange=()=>{ rekening.innerHTML=rekeningMap[bank.value]; };
+metode.onchange=()=>{ if(metode.value==="QRIS"){ transferArea.classList.add("hidden"); qrisArea.classList.remove("hidden"); }else{ transferArea.classList.remove("hidden"); qrisArea.classList.add("hidden"); } };
+
+// DEPOSIT - TETAP SAMA PERSIS KAYAK YANG SUDAH JALAN
+btnRequestDep.onclick=async()=>{
+    if(!auth.currentUser){ alert("Login dulu"); return; }
+    const nominal=Number(nominalDep.value);
+    if(isNaN(nominal)||nominal<10000){ alert("Minimal deposit Rp10.000"); return; }
+    const kodeUnik=Math.floor(Math.random()*900)+100;
+    const totalTransfer=nominal+kodeUnik;
+    try{
+        await db.collection("deposit").add({
+            uid:auth.currentUser.uid,email:auth.currentUser.email,nickname:player.profile?.nickname||"",
+            nominal:nominal,kodeUnik:kodeUnik,totalTransfer:totalTransfer,metode:metode.value,
+            bankTujuan:metode.value==="Transfer"?bank.value:"QRIS",status:"Pending",credited:false,
+            createdAt:firebase.firestore.FieldValue.serverTimestamp()
+        });
+        alert("Request deposit berhasil.\nTransfer Tepat: Rp "+totalTransfer.toLocaleString("id-ID")+"\n\nSaldo akan bertambah otomatis setelah admin ACC Success.");
+        nominalDep.value="";
+    }catch(err){ console.error(err); alert("Gagal deposit"); }
+};
+
+// KHUSUS DEPOSIT ONLY - TIDAK ADA WITHDRAW DI SINI
+function loadDepositOnly(){
+    if(!auth.currentUser) return;
+    db.collection("deposit").where("uid","==",auth.currentUser.uid).orderBy("createdAt","desc").onSnapshot(snap=>{
+        let html="";
+        snap.forEach(doc=>{
+            const d=doc.data();
+            html+=`<div class="status-item"><b>📥 Deposit Rp ${Number(d.nominal).toLocaleString("id-ID")}</b><br>${d.bankTujuan} - ${d.metode} | TF: Rp ${(d.totalTransfer||d.nominal).toLocaleString("id-ID")}<br>Status: <b style="color:${d.status=="Success"?"#00ff88":d.status=="Reject"?"#ff4444":"#ffd54a"}">${d.status}</b></div>`;
+        });
+        if(html==="") html="Belum ada transaksi deposit.";
+        statusList.innerHTML=html;
+    }, err=>{
+        console.error(err);
+        statusList.innerHTML=`<span style="color:#ff6b6b">Memuat butuh Index...<br><a href="https://console.firebase.google.com/project/game-demo-4db7f/firestore/indexes" target="_blank" style="color:#ffd54a">Klik buat Index di sini</a><br>${err.message}</span>`;
+    });
+}
+
+// AUTO CREDIT JIKA DEPOSIT SUCCESS - KHUSUS DEPOSIT
+function listenDepositSuccessOnly(){
+    const uid=auth.currentUser.uid;
+    db.collection("deposit").where("uid","==",uid).where("status","==","Success").onSnapshot(snap=>{
+        snap.forEach(doc=>{
+            const d=doc.data();
+            if(!d.credited){
+                db.collection("players").doc(uid).update({"wallet.coin":firebase.firestore.FieldValue.increment(d.nominal)}).then(()=>{
+                    doc.ref.update({credited:true});
+                });
+            }
+        });
+    });
+}
+</script>
+</body>
+</html>
