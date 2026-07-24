@@ -20,7 +20,7 @@
   };
 })();
 </script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FRUIT BOBANZA - V9</title>
+<title>FRUIT BOBANZA - V9.1</title>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
@@ -34,7 +34,6 @@ html,body{width:100%;min-height:100%;font-family:Arial,sans-serif;background:url
 .cell{position:relative;aspect-ratio:0.98;display:flex;justify-content:center;align-items:center;font-size:31px;background:transparent !important;border:none !important;overflow:visible;}
 .cell::after{display:none;}
 .fruit-emoji{display:block;filter:drop-shadow(0 3px 3px rgba(0,0,0,.45));line-height:1;}
-/* 2 BARIS ATAS TURUN SEDIKIT, 3 BARIS BAWAH TETAP */
 .cell:nth-child(-n+10) .fruit-emoji{transform:translateY(12px);}
 .cell:nth-child(n+11) .fruit-emoji{transform:translateY(6px);}
 .fall{animation:fall var(--fall-dur,.32s) ease;}
@@ -47,11 +46,10 @@ html,body{width:100%;min-height:100%;font-family:Arial,sans-serif;background:url
 #buyBtn{background:linear-gradient(180deg,#ff7a18,#d80000);border:1.5px solid #fff;}
 #autoCount{position:absolute;top:-7px;right:-7px;background:#ffeb3b;color:#000;font-size:10px;font-weight:900;padding:1px 5px;border-radius:10px;display:none;}
 .autoWrap{position:relative;}
-/* SPIN ROW - POSISI - DAN + DISESUAIKAN */
 .spinRow{width:100%;display:flex;align-items:center;justify-content:space-between;padding:0 12px;margin-top:4px;position:relative;}
 .betBtn{width:50px;height:50px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(0,0,0,.25) !important;border:1px solid rgba(255,255,255,.2) !important;border-radius:50%;color:#fff;font-size:32px;font-weight:900;text-shadow:0 2px 0 #000;backdrop-filter:blur(3px);}
 .betBtn:active{transform:scale(.78);}
-.speedBtn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(0,0,0,.30);border:1px solid rgba(255,255,255,.35);border-radius:50%;color:#fff;font-size:18px;backdrop-filter:blur(4px);position:absolute;left:78px;}
+.speedBtn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(0,0,0,.30);border:1px solid rgba(255,255,255,.35);border-radius:50%;color:#fff;font-size:18px;backdrop-filter:blur(4px);}
 #spinBtn{width:82px;height:82px;border-radius:50%;border:4px solid #fff;background:linear-gradient(180deg,#a8e62e 0%,#6cc500 30%,#2e7d00 100%);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 0 3px #5a3a1a,0 6px 14px rgba(0,0,0,.5),inset 0 3px 6px rgba(255,255,255,.6);transition:.15s;}
 #spinBtn span{font-size:38px;color:#fff;font-weight:bold;}
 #spinBtn.hidden{opacity:0;pointer-events:none;}
@@ -74,7 +72,6 @@ html,body{width:100%;min-height:100%;font-family:Arial,sans-serif;background:url
 <body>
 <div class="topPanel"><div>💥 MENANG : <span id="winAmount">0</span></div></div>
 <div class="board"><div id="grid"></div></div>
-
 <div class="controlArea">
   <div class="msgRow">
     <div class="autoWrap"><button class="actionBtn" id="autoBtn">⚙️ AUTO</button><span id="autoCount">0</span></div>
@@ -90,11 +87,9 @@ html,body{width:100%;min-height:100%;font-family:Arial,sans-serif;background:url
   <div class="saldoDisplay"><span>SALDO</span><b id="score">0</b></div>
   <div class="betDisplay"><span>BET</span><b id="betText">200</b></div>
 </div>
-
 <div id="freeSpinPopup"><div class="popupBox"><div style="font-size:22px;font-weight:900;color:#ff9800;">🎉 SELAMAT! 🎉</div><div style="font-size:48px;margin:8px 0;">💎💎💎💎</div><div style="font-size:14px;color:#444;margin-bottom:12px;">Mendapatkan<br><b>10 FREE SPINS</b></div><button id="popupOk" style="width:100%;padding:11px;background:#2e7d00;color:#fff;border:none;border-radius:10px;font-weight:900;">OK</button></div></div>
 <div id="autoPopup"><div class="popupBox"><div style="font-weight:900;font-size:17px;">AUTO SPIN</div><div class="autoGrid" id="autoGrid"></div><button id="autoCancel" style="width:100%;padding:9px;background:#eee;border:none;border-radius:10px;font-weight:700;">BATAL</button><button id="autoStop" style="width:100%;padding:9px;background:#ff1a1a;color:#fff;border:none;border-radius:10px;margin-top:6px;font-weight:700;display:none;">STOP AUTO</button></div></div>
 <div id="buyPopup"><div class="popupBox"><div style="font-weight:900;font-size:17px;">💎 BUY FREE SPIN</div><div style="margin:10px 0;font-size:13px;color:#333;">10 Free Spins - Harga 100x BET</div><div class="buyBetRow"><button class="buyBetBtn" id="buyBetMinus">−</button><div style="text-align:center;"><div style="font-size:10px;color:#777;">BET</div><b id="buyBetText" style="font-size:16px;">200</b><div style="font-size:10px;color:#777;">HARGA</div><b id="buyPrice" style="font-size:15px;color:#d80000;">20.000</b></div><button class="buyBetBtn" id="buyBetPlus">+</button></div><div style="display:flex;gap:8px;margin-top:8px;"><button id="buyCancel" style="flex:1;padding:11px;background:#eee;border:none;border-radius:10px;font-weight:700;">BATAL</button><button id="buyConfirm" style="flex:1;padding:11px;background:linear-gradient(180deg,#ff7a18,#d80000);color:#fff;border:none;border-radius:10px;font-weight:900;">BELI</button></div></div></div>
-
 <script>
 const firebaseConfig={apiKey:"AIzaSyBeTALsF43ij3aAlZjF1XeBjB1gNtaTb2I",authDomain:"game-demo-4db7f.firebaseapp.com",projectId:"game-demo-4db7f",storageBucket:"game-demo-4db7f.firebasestorage.app",messagingSenderId:"405381506143",appId:"1:405381506143:web:da63f34a24f01e4f0367ea"};
 firebase.initializeApp(firebaseConfig); const auth=firebase.auth(); const db=firebase.firestore();
@@ -106,13 +101,11 @@ function updateSpeedUI(){ document.getElementById('speedBtn').textContent=getSpe
 function updateBetUI(){ currentBet=BET_LEVELS[betIndex]; document.getElementById('betText').textContent=currentBet.toLocaleString('id-ID'); document.getElementById('buyBetText').textContent=currentBet.toLocaleString('id-ID'); document.getElementById('buyPrice').textContent=(currentBet*100).toLocaleString('id-ID'); document.getElementById('betMinus').style.opacity=betIndex===0?'0.3':'1'; document.getElementById('betPlus').style.opacity=betIndex===BET_LEVELS.length-1?'0.3':'1'; checkSaldoForSpin(); saveState(); }
 let fruitValue={"🍎":1000,"🍓":15000,"🍍":20000,"🥝":25000,"🍇":30000,"🥭":40000,"🍒":50000,"🍉":75000,"🥥":100000,"💎":400000};
 let player=null; auth.onAuthStateChanged(async u=>{ if(!u){ location.replace("index.html"); return;} const doc=await db.collection("players").doc(u.uid).get(); if(!doc.exists) return; player=doc.data(); const saved=loadState(); if(saved && saved.score!=null){ score=saved.score; betIndex=saved.betIndex||0; autoSpins=saved.autoSpins||0; isAuto=saved.isAuto||false; speedIdx=saved.speedIdx||0; if(isAuto) document.getElementById('autoCount').style.display='block'; } else { score=player.wallet?.coin||0; } updateSpeedUI(); updatePanel(); if(board.length===0) createBoard(); else drawBoard(); });
-
 const SCATTER="💎"; let freeSpins=0,inFreeSpin=false,ROWS=5,COLS=5; const symbols=["🍎","🍓","🍍","🥝","🍇","🥭","🍒","🍉","🥥"]; let board=[],score=0,combo=0,spinning=false,forceScatter=false; const grid=document.getElementById("grid"); let cells=[]; const scoreText=document.getElementById("score"), winAmountEl=document.getElementById("winAmount"), message=document.getElementById("message"), spinBtn=document.getElementById("spinBtn");
-
 let autoSpins=0,isAuto=false; const autoOptions=[10,20,30,40,50,100,150,200,300,400,500];
 function renderAutoGrid(){ const g=document.getElementById('autoGrid'); g.innerHTML=''; autoOptions.forEach(n=>{ const d=document.createElement('div'); d.className='autoOpt'+(autoSpins===n?' active':''); d.textContent=n; d.onclick=()=>{ autoSpins=n; isAuto=true; document.getElementById('autoCount').textContent=n; document.getElementById('autoCount').style.display='block'; closeAuto(); saveState(); spin(); }; g.appendChild(d); }); }
 function closeAuto(){ document.getElementById('autoPopup').style.display='none'; }
-function openAuto(){ renderAutoGrid(); document.getElementById('autoPopup').style.display='flex'; document.getElementById('autoStop').style.display=isAuto?'block':'none'; }
+function openAuto(){ if(inFreeSpin) return; renderAutoGrid(); document.getElementById('autoPopup').style.display='flex'; document.getElementById('autoStop').style.display=isAuto?'block':'none'; }
 function checkSaldoForSpin(){ if(score < currentBet && !inFreeSpin){ spinBtn.classList.add('hidden'); showMessage("💰 Saldo tidak cukup!"); } else { spinBtn.classList.remove('hidden'); } }
 function randomFruit(){ return symbols[Math.floor(Math.random()*symbols.length)]; }
 function updatePanel(){ scoreText.textContent=score.toLocaleString("id-ID"); winAmountEl.textContent=totalMenangSpin.toLocaleString("id-ID"); checkSaldoForSpin(); if(isAuto) document.getElementById('autoCount').textContent=autoSpins; saveState(); }
@@ -121,14 +114,29 @@ function createBoard(){ board=[]; for(let r=0;r<ROWS;r++){ let row=[]; for(let c
 function drawBoard(){ grid.innerHTML=""; cells=[]; for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){ const cell=document.createElement("div"); cell.className="cell"; const span=document.createElement("span"); span.className="fruit-emoji"; span.textContent=board[r][c]; cell.appendChild(span); grid.appendChild(cell); cells.push(cell); } }
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 async function animateSpin(){
-  const sp=getSpeed(); spinBtn.disabled=true; spinning=true; showMessage(isAuto?"AUTO "+sp.icon+" "+autoSpins+" sisa":"SPIN..."); forceScatter=Math.random()*100<18;
+  const sp=getSpeed(); spinning=true; spinBtn.disabled=true;
+  if(inFreeSpin) showMessage("🎁 FREE SPINS : "+freeSpins);
+  else if(isAuto) showMessage("AUTO "+sp.icon+" "+autoSpins+" sisa - Tekan SPIN untuk STOP");
+  else showMessage("SPIN...");
+  forceScatter=Math.random()*100<18;
   for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){ board[r][c]=null; updateCell(r,c); }
   await sleep(sp.gravity); await gravity();
   if(forceScatter && !inFreeSpin){ const used=[]; const tot=4+Math.floor(Math.random()*3); while(used.length<tot){ const r=Math.floor(Math.random()*ROWS),c=Math.floor(Math.random()*COLS),k=r+"-"+c; if(used.includes(k)) continue; used.push(k); board[r][c]=SCATTER; updateCell(r,c);} }
 }
 async function spin(){
-  if(spinning && !isAuto) return;
-  if(isAuto && spinning){ stopAuto(); showMessage("Auto dihentikan"); spinBtn.disabled=false; spinning=false; return; }
+  // LOGIKA BARU SESUAI REQUEST:
+  // 1. FREE SPIN: tidak bisa dihentikan tombol apapun
+  if(inFreeSpin){
+    return; // block total selama free spin
+  }
+  // 2. AUTO SPIN: hanya bisa dihentikan tombol SPIN
+  if(isAuto && spinning){
+    stopAuto();
+    showMessage("Auto dihentikan");
+    spinBtn.disabled=false; spinning=false;
+    return;
+  }
+  if(spinning) return;
   if(score < currentBet && !inFreeSpin){ showMessage("❌ Saldo di bawah BET!"); checkSaldoForSpin(); stopAuto(); return; }
   try{
     combo=0; totalMenangSpin=0; updatePanel();
@@ -137,7 +145,8 @@ async function spin(){
     showMessage("🔍"); await sleep(getSpeed().drop*3);
     const res=findMatches();
     if(res.length===0){
-      if(!inFreeSpin){ score=Math.max(0, score-currentBet); if(player){ player.wallet.coin=score; const u=auth.currentUser; if(u) await db.collection("players").doc(u.uid).update({"wallet.coin":score}); } }
+      score=Math.max(0, score-currentBet);
+      if(player){ player.wallet.coin=score; const u=auth.currentUser; if(u) await db.collection("players").doc(u.uid).update({"wallet.coin":score}); }
       updatePanel(); showMessage("❌ Kalah (-"+currentBet.toLocaleString("id-ID")+")"); spinBtn.disabled=false; spinning=false; handleAutoNext(); return;
     }
     await destroyMatches(res);
@@ -146,19 +155,22 @@ async function spin(){
 function handleAutoNext(){ if(isAuto){ autoSpins--; document.getElementById('autoCount').textContent=autoSpins; saveState(); if(autoSpins<=0){ stopAuto(); } else { setTimeout(()=>{ if(!spinning) spin(); }, getSpeed().autoDelay); } } }
 function stopAuto(){ isAuto=false; autoSpins=0; document.getElementById('autoCount').style.display='none'; saveState(); }
 
-document.getElementById('betMinus').onclick=()=>{ if(betIndex>0){ betIndex--; updateBetUI(); } };
-document.getElementById('betPlus').onclick=()=>{ if(betIndex<BET_LEVELS.length-1){ betIndex++; updateBetUI(); } };
+document.getElementById('betMinus').onclick=()=>{ if(inFreeSpin) return; if(betIndex>0){ betIndex--; updateBetUI(); } };
+document.getElementById('betPlus').onclick=()=>{ if(inFreeSpin) return; if(betIndex<BET_LEVELS.length-1){ betIndex++; updateBetUI(); } };
 document.getElementById('buyBetMinus').onclick=()=>{ if(betIndex>0){ betIndex--; updateBetUI(); } };
 document.getElementById('buyBetPlus').onclick=()=>{ if(betIndex<BET_LEVELS.length-1){ betIndex++; updateBetUI(); } };
+// SPEED: TIDAK MENGHENTIKAN AUTO, CUMA GANTI KECEPATAN - BERLAKU JUGA DI FREE SPIN
 document.getElementById('speedBtn').onclick=()=>{
-  if(isAuto){ stopAuto(); showMessage("Auto dihentikan via kecepatan"); return; }
-  speedIdx=(speedIdx+1)%SPEED_SET.length; updateSpeedUI(); saveState();
+  speedIdx=(speedIdx+1)%SPEED_SET.length;
+  updateSpeedUI();
+  saveState();
+  if(isAuto) showMessage("Kecepatan "+getSpeed().icon+" - AUTO "+autoSpins+" sisa");
 };
 spinBtn.addEventListener("click",()=>{ spin(); });
 document.getElementById('autoBtn').onclick=openAuto;
 document.getElementById('autoCancel').onclick=closeAuto;
 document.getElementById('autoStop').onclick=()=>{ stopAuto(); closeAuto(); };
-document.getElementById('buyBtn').onclick=()=>{ document.getElementById('buyPopup').style.display='flex'; updateBetUI(); };
+document.getElementById('buyBtn').onclick=()=>{ if(inFreeSpin) return; document.getElementById('buyPopup').style.display='flex'; updateBetUI(); };
 document.getElementById('buyCancel').onclick=()=>{ document.getElementById('buyPopup').style.display='none'; };
 document.getElementById('buyConfirm').onclick=async()=>{
   const price=currentBet*100;
@@ -167,25 +179,9 @@ document.getElementById('buyConfirm').onclick=async()=>{
   score-=price; if(player){ player.wallet.coin=score; const u=auth.currentUser; if(u) await db.collection("players").doc(u.uid).update({"wallet.coin":score}); } updatePanel();
   await startFreeSpins(true);
 };
-
-// PERSISTENCE ANTI REFRESH
-function saveState(){
-  try{
-    localStorage.setItem('bobanza_state', JSON.stringify({score,betIndex,autoSpins,isAuto,speedIdx,board,totalMenangSpin,timestamp:Date.now()}));
-  }catch(e){}
-}
-function loadState(){
-  try{
-    const s=JSON.parse(localStorage.getItem('bobanza_state')||'null');
-    if(!s) return null;
-    if(Date.now()-s.timestamp>600000) return null; // 10 menit expired
-    board=s.board||[];
-    totalMenangSpin=s.totalMenangSpin||0;
-    return s;
-  }catch(e){return null;}
-}
+function saveState(){ try{ localStorage.setItem('bobanza_state', JSON.stringify({score,betIndex,autoSpins,isAuto,speedIdx,board,totalMenangSpin,timestamp:Date.now()})); }catch(e){} }
+function loadState(){ try{ const s=JSON.parse(localStorage.getItem('bobanza_state')||'null'); if(!s) return null; if(Date.now()-s.timestamp>600000) return null; board=s.board||[]; totalMenangSpin=s.totalMenangSpin||0; return s; }catch(e){return null;} }
 window.addEventListener('beforeunload', saveState);
-
 function findMatches(){ const counts={},pos={}; for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){ const f=board[r][c]; if(f===SCATTER) continue; if(!counts[f]){counts[f]=0; pos[f]=[];} counts[f]++; pos[f].push({r,c}); } const m=[]; for(const f in counts) if(counts[f]>=6) m.push(pos[f]); return m; }
 async function destroyMatches(groups){
   for(const g of groups) for(const p of g){ const i=p.r*COLS+p.c; cells[i].style.transform="scale(1.28)"; cells[i].style.opacity="0"; }
@@ -199,7 +195,7 @@ async function destroyMatches(groups){
   await gravity();
   const again=findMatches();
   if(again.length>0){ combo++; showMessage("💥 +"+winThis.toLocaleString('id-ID')+" | Total: "+totalMenangSpin.toLocaleString('id-ID')); await sleep(getSpeed().drop*2); await destroyMatches(again); }
-  else { showWin("+"+totalMenangSpin.toLocaleString('id-ID')); showMessage("Menang "+totalMenangSpin.toLocaleString('id-ID')); spinBtn.disabled=false; spinning=false; saveState(); handleAutoNext(); }
+  else { showWin("+"+totalMenangSpin.toLocaleString('id-ID')); showMessage(isAuto?"AUTO sisa "+autoSpins+" - Menang "+totalMenangSpin.toLocaleString('id-ID'):"Menang "+totalMenangSpin.toLocaleString('id-ID')); spinBtn.disabled=false; spinning=false; saveState(); handleAutoNext(); }
 }
 async function gravity(){
   const sp=getSpeed();
