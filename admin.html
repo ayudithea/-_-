@@ -54,38 +54,27 @@ min-height:calc(100vh - 70px);
 }
 
 .sidebar{
-width:240px;
+position:fixed;
+top:70px;
+left:-260px;
+width:250px;
+height:calc(100vh - 70px);
 background:#182235;
 padding:15px;
+transition:.3s;
+z-index:999;
+overflow-y:auto;
 }
 
-.sidebar button{
-width:100%;
-padding:14px;
-margin-bottom:10px;
-border:none;
-border-radius:10px;
-background:#22314f;
-color:#fff;
-font-size:15px;
-cursor:pointer;
-text-align:left;
-}
-
-.sidebar button:hover{
-background:#2563eb;
-}
-
-.sidebar button.active{
-background:#ffd54a;
-color:#000;
-font-weight:bold;
+.sidebar.show{
+left:0;
 }
 
 .content{
-flex:1;
+width:100%;
 padding:20px;
-overflow:auto;
+margin-left:0;
+flex:1;
 }
 
 .card-grid{
@@ -201,6 +190,7 @@ display:none;
 <body>
 
 <header>
+<button id="btnMenu" class="btn blue">☰</button>
 <h2>👑 Legends Portal Admin</h2>
 <div style="display:flex;align-items:center;gap:12px;">
 
@@ -728,7 +718,12 @@ const pageSetting=document.getElementById("pageSetting");
 
 const pageLog=document.getElementById("pageLog");
 
+const btnMenu = document.getElementById("btnMenu");
+const sidebar = document.querySelector(".sidebar");
 
+btnMenu.onclick = ()=>{
+    sidebar.classList.toggle("show");
+};
 // ==========================
 // LOGOUT
 // ==========================
@@ -783,7 +778,7 @@ menuBroadcast.classList.remove("active");
 menuSetting.classList.remove("active");
 
 menuLog.classList.remove("active");
-
+sidebar.classList.remove("show");
 }
 
 menuDashboard.onclick=()=>{
