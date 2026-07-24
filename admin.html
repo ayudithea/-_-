@@ -1,106 +1,224 @@
 <!DOCTYPE html>
+<html lang="id">
+<head><!-- PLAYABLE_TOUCH_PATCH_V1 --><script>
+(function() {
+  if (window.__playableTouchPatchInstalled) return;
+  window.__playableTouchPatchInstalled = true;
+  var origAdd = EventTarget.prototype.addEventListener;
+  var blockedTypes = { touchstart: 1, touchmove: 1, wheel: 1 };
+  EventTarget.prototype.addEventListener = function(type, listener, options) {
+    if (blockedTypes[type]) {
+      if (options === undefined || options === null) {
+        options = { passive: true };
+      } else if (typeof options === 'boolean') {
+        options = { capture: options, passive: true };
+      } else {
+        options = Object.assign({}, options, { passive: true });
+      }
+    }
+    return origAdd.call(this, type, listener, options);
+  };
+})();
+</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard - Fruit Bobanza</title>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+body{background:#0b1220;color:#fff;min-height:100vh;}
+header{height:70px;background:#182235;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:2px solid #ffd54a;position:sticky;top:0;z-index:100;}
+header h2{color:#ffd54a;font-size:22px;}
+header button{padding:10px 18px;border:none;border-radius:8px;background:#ff4444;color:#fff;font-weight:bold;cursor:pointer;}
+.container{display:flex;min-height:calc(100vh - 70px);}
+.sidebar{position:fixed;top:70px;left:0;width:240px;height:calc(100vh - 70px);background:#182235;padding:15px;overflow-y:auto;transition:.3s;z-index:999;}
+.sidebar button{width:100%;padding:14px;margin-bottom:10px;border:none;border-radius:10px;background:#22314f;color:#fff;font-size:14px;cursor:pointer;text-align:left;}
+.sidebar button:hover{background:#2563eb;}
+.sidebar button.active{background:#ffd54a;color:#000;font-weight:bold;}
+.content{margin-left:240px;width:calc(100% - 240px);padding:20px;}
+.card{background:#182235;border-radius:14px;padding:20px;margin-bottom:20px;border:1px solid rgba(255,255,255,.1);}
+.card h3{color:#ffd54a;margin-bottom:14px;font-size:18px;}
+.row{display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:center;margin-bottom:10px;}
+.row input{padding:10px;border-radius:8px;border:1px solid #333;background:#0b1220;color:#fff;width:100%;}
+.btn-save{padding:12px 20px;background:#ffd54a;color:#000;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin-top:10px;}
+.btn-save:hover{background:#ffca20;}
+.betList{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;}
+.betItem{background:#0b1220;border:1px solid #333;padding:8px 12px;border-radius:8px;display:flex;align-items:center;gap:6px;}
+.betItem input{width:80px;background:transparent;border:none;color:#fff;text-align:center;}
+.betItem span{cursor:pointer;color:#ff4444;font-weight:bold;}
+table{width:100%;border-collapse:collapse;margin-top:10px;}
+table th,table td{padding:10px;border-bottom:1px solid #22314f;text-align:left;font-size:13px;}
+table th{color:#ffd54a;}
+.status{padding:8px 12px;background:#12361a;border:1px solid #2e7d00;border-radius:8px;color:#a8e62e;margin-bottom:12px;display:none;}
+@media(max-width:768px){.sidebar{left:-260px;}.sidebar.show{left:0;}.content{margin-left:0;width:100%;}#overlay{display:block;}}
+#overlay{position:fixed;top:70px;left:0;width:100%;height:calc(100vh - 70px);background:rgba(0,0,0,.5);display:none;z-index:998;}
+#overlay.show{display:block;}
+</style>
+</head>
+<body>
+<header>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button id="menuBtn" style="background:#22314f;">☰</button>
+    <h2>🍓 Admin - Fruit Bobanza</h2>
+  </div>
+  <button id="logoutBtn">Logout</button>
+</header>
+<div id="overlay"></div>
+<div class="container">
+  <div class="sidebar" id="sidebar">
+    <button class="active" data-tab="fruit">🍎 Nilai Buah</button>
+    <button data-tab="bet">💰 Setting BET</button>
+    <button data-tab="combo">💥 Label Menang</button>
+    <button data-tab="players">👥 Players</button>
+  </div>
+  <div class="content">
+    <div id="status" class="status">Berhasil disimpan!</div>
 
-<html lang="id">  
-<head>  
-<meta charset="UTF-8">  
-<meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>Admin Dashboard - Legends Portal</title>  <style>  
-  
-*{  
-margin:0;  
-padding:0;  
-box-sizing:border-box;  
-font-family:Arial,sans-serif;  
-}  
-  
-body{  
-background:#0b1220;  
-color:#fff;  
-}  
-  
-header{  
-height:70px;  
-background:#182235;  
-display:flex;  
-align-items:center;  
-justify-content:space-between;  
-padding:0 20px;  
-border-bottom:2px solid #ffd54a;  
-position:sticky;  
-top:0;  
-z-index:100;  
-}  
-  
-header h2{  
-color:#ffd54a;  
-font-size:22px;  
-}  
-  
-header button{  
-padding:10px 18px;  
-border:none;  
-border-radius:8px;  
-background:#ff4444;  
-color:#fff;  
-font-weight:bold;  
-cursor:pointer;  
-}  
-  
-.container{  
-display:flex;  
-min-height:calc(100vh - 70px);  
-}  
-  
-.sidebar{
-position:fixed;
-top:70px;
-left:-260px;
-width:240px;
-height:calc(100vh - 70px);
-background:#182235;
-padding:15px;
-overflow-y:auto;
-transition:.3s;
-z-index:999;
-}
-.sidebar.show{
-left:0;
-}
-  #overlay{
-position:fixed;
-top:70px;
-left:0;
-width:100%;
-height:calc(100vh - 70px);
-background:rgba(0,0,0,.45);
-display:none;
-z-index:998;
-}
+    <div id="tab-fruit" class="tab">
+      <div class="card">
+        <h3>🍎 Nilai Buah (Score per buah)</h3>
+        <p style="font-size:12px;color:#aaa;margin-bottom:12px;">Ini yang dipakai di game kamu. Rumus menang: jumlah buah x nilai buah x (BET/200)</p>
+        <div id="fruitForm"></div>
+        <button class="btn-save" onclick="saveFruits()">💾 Simpan Nilai Buah</button>
+      </div>
+    </div>
 
-#overlay.show{
-display:block;
+    <div id="tab-bet" class="tab" style="display:none;">
+      <div class="card">
+        <h3>💰 Level BET</h3>
+        <p style="font-size:12px;color:#aaa;">Harga Buy Spin = BET x 100 (contoh BET 200 = 20.000)</p>
+        <div class="betList" id="betList"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <input id="newBet" type="number" placeholder="Tambah BET baru, contoh 250" style="padding:10px;border-radius:8px;background:#0b1220;border:1px solid #333;color:#fff;width:180px;">
+          <button class="btn-save" style="margin:0;" onclick="addBet()">+ Tambah</button>
+        </div>
+        <button class="btn-save" onclick="saveBets()" style="background:#2e7d00;color:#fff;">💾 Simpan BET</button>
+      </div>
+    </div>
+
+    <div id="tab-combo" class="tab" style="display:none;">
+      <div class="card">
+        <h3>💥 Label Menang</h3>
+        <div id="comboForm"></div>
+        <button class="btn-save" onclick="saveCombo()">💾 Simpan Label</button>
+      </div>
+    </div>
+
+    <div id="tab-players" class="tab" style="display:none;">
+      <div class="card">
+        <h3>👥 Daftar Players</h3>
+        <table>
+          <thead><tr><th>Email</th><th>Saldo</th><th>UID</th></tr></thead>
+          <tbody id="playersTable"><tr><td colspan="3">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const firebaseConfig={apiKey:"AIzaSyBeTALsF43ij3aAlZjF1XeBjB1gNtaTb2I",authDomain:"game-demo-4db7f.firebaseapp.com",projectId:"game-demo-4db7f",storageBucket:"game-demo-4db7f.firebasestorage.app",messagingSenderId:"405381506143",appId:"1:405381506143:web:da63f34a24f01e4f0367ea"};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth(); const db=firebase.firestore();
+
+auth.onAuthStateChanged(u=>{
+  if(!u){ location.replace("index.html"); return; }
+  loadAll();
+});
+
+document.getElementById('logoutBtn').onclick=()=>{ auth.signOut().then(()=>location.replace("index.html")); };
+document.getElementById('menuBtn').onclick=()=>{
+  document.getElementById('sidebar').classList.toggle('show');
+  document.getElementById('overlay').classList.toggle('show');
+};
+document.getElementById('overlay').onclick=()=>{
+  document.getElementById('sidebar').classList.remove('show');
+  document.getElementById('overlay').classList.remove('show');
+};
+document.querySelectorAll('.sidebar button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.sidebar button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.querySelectorAll('.tab').forEach(t=>t.style.display='none');
+    document.getElementById('tab-'+b.dataset.tab).style.display='block';
+    if(window.innerWidth<768){ document.getElementById('sidebar').classList.remove('show'); document.getElementById('overlay').classList.remove('show'); }
+  };
+});
+
+let fruitData={"🍎":1000,"🍓":15000,"🍍":20000,"🥝":25000,"🍇":30000,"🥭":40000,"🍒":50000,"🍉":75000,"🥥":100000,"💎":400000};
+let betLevels=[200,400,600,800,1000,2000,4000,6000,8000,10000,15000,20000,30000,50000,100000];
+let comboData={win:"WIN",combo:"COMBO x",bigWin:"BIG WIN",megaWin:"MEGA WIN",jackpot:"JACKPOT"};
+
+async function loadAll(){
+  const f=await db.collection("game_config").doc("fruit_values").get();
+  if(f.exists && f.data().valuesMap) fruitData=f.data().valuesMap;
+  const b=await db.collection("game_config").doc("bet_config").get();
+  if(b.exists && b.data().levels) betLevels=b.data().levels;
+  const c=await db.collection("game_config").doc("combo_labels").get();
+  if(c.exists) comboData={...comboData,...c.data()};
+  renderFruits(); renderBets(); renderCombo(); loadPlayers();
 }
-.sidebar button{  
-width:100%;  
-padding:14px;  
-margin-bottom:10px;  
-border:none;  
-border-radius:10px;  
-background:#22314f;  
-color:#fff;  
-font-size:15px;  
-cursor:pointer;  
-text-align:left;  
-}  
-  
-.sidebar button:hover{  
-background:#2563eb;  
-}  
-  
-.sidebar button.active{  
-background:#ffd54a;  
-color:#000;  
-font-weight:bold;  
-}  
-  
-.content{
-width:100%;
+function renderFruits(){
+  const el=document.getElementById('fruitForm'); el.innerHTML='';
+  for(const k in fruitData){
+    const div=document.createElement('div'); div.className='row';
+    div.innerHTML=`<label style="font-size:22px;text-align:center;">${k}</label><input id="fruit_${k}" type="number" value="${fruitData[k]}">`;
+    el.appendChild(div);
+  }
+}
+function renderBets(){
+  const el=document.getElementById('betList'); el.innerHTML='';
+  betLevels.sort((a,b)=>a-b).forEach((v,i)=>{
+    const d=document.createElement('div'); d.className='betItem';
+    d.innerHTML=`<input type="number" value="${v}" onchange="updateBet(${i},this.value)"><span onclick="removeBet(${i})">✕</span>`;
+    el.appendChild(d);
+  });
+}
+function renderCombo(){
+  const el=document.getElementById('comboForm'); el.innerHTML='';
+  for(const k in comboData){
+    const div=document.createElement('div'); div.className='row';
+    div.innerHTML=`<label>${k}</label><input id="combo_${k}" value="${comboData[k]}">`;
+    el.appendChild(div);
+  }
+}
+function updateBet(i,val){ betLevels[i]=parseInt(val)||0; }
+function removeBet(i){ betLevels.splice(i,1); renderBets(); }
+function addBet(){ const v=parseInt(document.getElementById('newBet').value); if(!v) return; betLevels.push(v); document.getElementById('newBet').value=''; renderBets(); }
+
+async function saveFruits(){
+  const newMap={};
+  for(const k in fruitData){ const v=document.getElementById('fruit_'+k); if(v) newMap[k]=parseInt(v.value)||0; }
+  await db.collection("game_config").doc("fruit_values").set({valuesMap:newMap},{merge:true});
+  showStatus("Nilai buah berhasil disimpan!");
+}
+async function saveBets(){
+  const clean=[...new Set(betLevels.filter(x=>x>0))].sort((a,b)=>a-b);
+  await db.collection("game_config").doc("bet_config").set({levels:clean},{merge:true});
+  showStatus("BET berhasil disimpan! Harga Buy Spin = BET x 100");
+}
+async function saveCombo(){
+  const newObj={};
+  for(const k in comboData){ const el=document.getElementById('combo_'+k); if(el) newObj[k]=el.value; }
+  await db.collection("game_config").doc("combo_labels").set(newObj,{merge:true});
+  showStatus("Label menang disimpan!");
+}
+async function loadPlayers(){
+  const snap=await db.collection("players").limit(50).get();
+  const tbody=document.getElementById('playersTable'); tbody.innerHTML='';
+  snap.forEach(d=>{
+    const p=d.data();
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${p.email||'-'}</td><td>${(p.wallet?.coin||0).toLocaleString('id-ID')}</td><td style="font-size:10px;">${d.id.substring(0,8)}...</td>`;
+    tbody.appendChild(tr);
+  });
+}
+function showStatus(txt){
+  const s=document.getElementById('status'); s.textContent=txt; s.style.display='block'; setTimeout(()=>s.style.display='none',3000);
+}
+</script>
+</body>
+</html>
