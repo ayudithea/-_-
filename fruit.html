@@ -616,7 +616,8 @@ async function showMultiplier(){
     }
 
 }  
- const fruitValue = {
+ // DEFAULT (kalau firebase belum ada)
+let fruitValue = {
     "🍎": 1000,
     "🍓": 15000,
     "🍍": 20000,
@@ -626,8 +627,16 @@ async function showMultiplier(){
     "🍒": 50000,
     "🍉": 75000,
     "🥥": 100000,
-    "💎": 400000   // Scatter
+    "💎": 400000
 };
+
+// AMBIL LIVE DARI FIREBASE
+db.collection("game_config").doc("fruit_values").onSnapshot((doc)=>{
+  if(doc.exists && doc.data().valuesMap){
+    fruitValue = doc.data().valuesMap;
+    console.log("Nilai buah update:", fruitValue);
+  }
+});
 function randomFruit(){
 
     const normalFruits=[
