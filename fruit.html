@@ -509,31 +509,25 @@ firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const db = firebase.firestore();    
- let player = null;
+ const db = firebase.firestore();
 
-auth.onAuthStateChanged(async(user)=>{
+// --- CONFIG NAMA COMBO DARI FIREBASE ---
+let comboLabels = {
+  topComboLabel: "COMBO",
+  win: "🎉 WIN",
+  combo: "🔥 COMBO x",
+  bigWin: "🏆 BIG WIN",
+  megaWin: "💎 MEGA WIN",
+  jackpot: "👑 JACKPOT"
+};
 
-    if(!user){
-        location.replace("index.html");
-        return;
-    }
-
-    const doc = await db.collection("players")
-        .doc(user.uid)
-        .get();
-
-    if(!doc.exists){
-        alert("Data player tidak ditemukan.");
-        location.replace("portal.html");
-        return;
-    }
-
-    player = doc.data();
-
-    score = player.wallet.coin || 0;
-
-    updatePanel();
-
+// Ambil config live dari Firebase
+db.collection("game_config").doc("combo_labels").onSnapshot((doc)=>{
+  if(doc.exists){
+    comboLabels = {...comboLabels,...doc.data()};
+    // update label di top panel
+    document.querySelector('.topPanel div:nth-child(2)').childNodes[0].textContent = `🔥 ${comboLabels.topComboLabel} : `;
+  }
 });
 const SCATTER = "💎";
 const SCATTER_CHANCE = 50; // 20% per putaran
@@ -965,24 +959,16 @@ await destroyMatches(again);
 }else{
 
 if(combo==0){
-
-showWin("🎉 WIN");
-
+  showWin(comboLabels.win);
 }else if(combo<3){
-
-showWin("🔥 COMBO x"+(combo+1));
-
+  showWin(comboLabels.combo + (combo+1));
 }else if(combo<5){
-
-showWin("🏆 BIG WIN");
-
+  showWin(comboLabels.bigWin);
 }else if(combo<8){
-
-showWin("💎 MEGA WIN");
-
+  showWin(comboLabels.megaWin);
 }else{
-
-showWin("👑 JACKPOT");
+  showWin(comboLabels.jackpot);
+}
 
 if(navigator.vibrate){
 
