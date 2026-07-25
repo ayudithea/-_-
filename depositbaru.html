@@ -22,435 +22,210 @@
 </script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deposit - Legends Portal</title>
-<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+<title>Wallet Deposit - Alur Final</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
-body{background:#0b1220;color:#fff;min-height:100vh;}
-.header{height:64px;background:#182235;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:2px solid #ffd54a;position:sticky;top:0;z-index:10;}
-.header h2{color:#ffd54a;font-size:18px;}
-.header button{padding:8px 14px;background:#22314f;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer;}
-.container{max-width:520px;margin:auto;padding:16px;}
-.card{background:#182235;border-radius:16px;padding:16px;margin-bottom:14px;border:1px solid rgba(255,255,255,.08);}
-.saldoCard{text-align:center;background:linear-gradient(135deg,#182235,#22314f);border:2px solid #00b894;}
-.saldoCard small{color:#bbb;display:block;margin-bottom:6px;letter-spacing:1px;}
-.saldoCard h1{color:#ffd54a;font-size:36px;margin:6px 0;}
-.saldoCard .live{font-size:11px;color:#00ff88;}
-.label{font-size:12px;color:#aaa;margin:10px 0 6px 2px;display:block;}
-.input{width:100%;padding:13px;border-radius:10px;background:#0b1220;border:1px solid #333;color:#fff;font-size:15px;}
-.select{width:100%;padding:13px;border-radius:10px;background:#0b1220;border:1px solid #333;color:#fff;font-size:15px;}
-.btn{width:100%;padding:14px;border:none;border-radius:12px;font-weight:bold;font-size:15px;cursor:pointer;margin-top:12px;}
-.btn-dep{background:linear-gradient(180deg,#00b894,#006d4f);color:#fff;box-shadow:0 4px 12px rgba(0,184,148,.3);}
-.btn-back{background:#22314f;color:#fff;}
-.infoBox{background:#0b1220;border-radius:10px;padding:10px;font-size:12px;line-height:1.6;margin-top:10px;border:1px dashed #333;}
-.badge{padding:4px 8px;border-radius:8px;font-size:11px;font-weight:bold;display:inline-block;}
-.badge.pending{background:#ffd54a;color:#000;}
-.badge.success{background:#00c853;color:#fff;}
-.badge.reject{background:#ff3b30;color:#fff;}
-.depItem{background:#0b1220;border-radius:12px;padding:12px;margin-top:10px;border:1px solid #22314f;}
-.depItem .row{display:flex;justify-content:space-between;font-size:13px;margin:3px 0;}
-.rekItem{background:#0b1220;border-radius:12px;padding:12px;margin-top:10px;border:1px solid #ffd54a;position:relative;}
-.rekItem .bankName{color:#ffd54a;font-weight:bold;font-size:14px;}
-.rekItem .noRek{font-size:16px;font-weight:bold;margin:4px 0;letter-spacing:0.5px;}
-.rekItem .an{font-size:12px;color:#bbb;}
-.btnCopy{position:absolute;top:12px;right:12px;padding:6px 10px;background:#22314f;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;}
+body{background:#0b1220;color:#fff;}
+.container{max-width:520px;margin:auto;padding:15px;}
+.card{background:#182235;border-radius:15px;padding:15px;margin-bottom:15px;border:1px solid #2a3d5e;}
+h2{text-align:center;margin-bottom:15px;}
+.saldo{text-align:center;}
+.saldo small{color:#bbb;display:block;margin-bottom:8px;}
+.saldo h1{color:#ffd54a;font-size:38px;}
+label{display:block;margin-top:12px;margin-bottom:5px;font-size:14px;color:#aaa;}
+select,input{width:100%;padding:12px;border-radius:8px;margin-bottom:12px;background:#0f1a2e;color:#fff;border:1px solid #2a3d5e;}
+.btn{width:100%;padding:14px;border:none;border-radius:10px;background:#2563eb;color:#fff;cursor:pointer;font-weight:bold;font-size:15px;}
+.btn:disabled{background:#555;cursor:not-allowed;}
+.info{background:#22314f;border-radius:10px;padding:12px;margin-top:10px;line-height:1.7;border:1px dashed #3a5a8c;}
+.info b{color:#ffd54a;}
+.status-item{background:#1f2f4d;border-radius:12px;padding:12px;margin-top:12px;border-left:5px solid #ffd54a;animation:fadeIn .3s;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.badge{padding:3px 8px;border-radius:6px;font-size:11px;font-weight:bold;}
+.badge-pending{background:#ffd54a;color:#000;}
+.badge-success{background:#00ff88;color:#000;}
+.badge-reject{background:#ff4444;color:#fff;}
+/* Popup */
+.popup-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:999;}
+.popup{background:#182235;padding:20px;border-radius:15px;width:90%;max-width:400px;border:2px solid #ffd54a;text-align:center;}
+.popup h3{color:#ffd54a;margin-bottom:10px;}
+.popup .total{font-size:28px;font-weight:bold;color:#fff;margin:10px 0;}
+.popup .kode{color:#00ff88;font-size:14px;}
 </style>
 </head>
 <body>
-<div class="header">
-  <h2>💳 Deposit</h2>
-  <button onclick="location.href='portal.html'">🏠 Portal</button>
-</div>
-
 <div class="container">
-  <div class="card saldoCard">
-    <small>SALDO COIN SAAT INI</small>
-    <h1 id="saldo">0</h1>
-    <div class="live">● Live dari Firebase</div>
-    <div style="margin-top:10px;font-size:13px;text-align:left;background:rgba(0,0,0,.3);padding:10px;border-radius:10px;">
-      <div>Email: <b id="email">-</b></div>
-      <div>Username: <b id="username">-</b></div>
-      <div>UID: <b id="uid" style="font-size:10px;">-</b></div>
-    </div>
-  
-  <!-- LOCK JIKA ADA PENDING -->
-  <div id="pendingLock" style="display:none;" class="card">
-    <div style="text-align:center;padding:10px;">
-      <div style="font-size:40px;">⏳</div>
-      <h3 style="color:#ffd54a;margin-top:10px;">Deposit Pending - Menunggu ACC Admin</h3>
-      <p style="font-size:12px;color:#bbb;margin-top:6px;">Kamu masih punya deposit yang belum di-ACC. Selesaikan dulu sebelum deposit lagi.</p>
-      <div id="pendingDetail" style="background:#0b1220;border-radius:10px;padding:12px;margin-top:12px;text-align:left;font-size:13px;"></div>
-      <button class="btn btn-back" onclick="location.reload()" style="margin-top:12px;">🔄 Cek Status ACC</button>
-      <div style="font-size:11px;color:#00ff88;margin-top:10px;">Admin akan ACC dan saldo otomatis masuk ke akun kamu</div>
-    </div>
-  </div>
-
-  <div class="card" id="rekeningCard">
-    <h3 style="color:#ffd54a;margin-bottom:10px;">💰 Silakan melakukan pembayaran ke salah satu rekening berikut:</h3>
-    <div style="font-size:13px;margin-bottom:10px;color:#00ff88;">👤 Atas Nama: <b>YUDI ALIYUDIN</b></div>
-
-    <div class="rekItem">
-      <div class="bankName">🏦 Bank Mandiri</div>
-      <div class="noRek" id="rekMandiri">1340033268904</div>
-      <div class="an">Atas Nama: YUDI ALIYUDIN</div>
-      <button class="btnCopy" onclick="copyText('1340033268904')">📋 Salin</button>
-    </div>
-
-    <div class="rekItem">
-      <div class="bankName">🏦 Bank BCA</div>
-      <div class="noRek" id="rekBCA">4180734771</div>
-      <div class="an">Atas Nama: YUDI ALIYUDIN</div>
-      <button class="btnCopy" onclick="copyText('4180734771')">📋 Salin</button>
-    </div>
-
-    <div class="rekItem">
-      <div class="bankName">🏦 Bank BRI</div>
-      <div class="noRek" id="rekBRI">004601060489505</div>
-      <div class="an">Atas Nama: YUDI ALIYUDIN</div>
-      <button class="btnCopy" onclick="copyText('004601060489505')">📋 Salin</button>
-    </div>
-
-    <div class="rekItem">
-      <div class="bankName">💳 DANA / GoPay</div>
-      <div class="noRek" id="rekDana">082319264646</div>
-      <div class="an">Atas Nama: YUDI ALIYUDIN</div>
-      <button class="btnCopy" onclick="copyText('082319264646')">📋 Salin</button>
-    </div>
-
-    <div class="rekItem">
-      <div class="bankName">🏦 SeaBank</div>
-      <div class="noRek" id="rekSea">901341445605</div>
-      <div class="an">Atas Nama: YUDI ALIYUDIN</div>
-      <button class="btnCopy" onclick="copyText('901341445605')">📋 Salin</button>
-    </div>
-
-    <div style="background:#003d2a;border:1px solid #00b894;color:#00ff88;padding:10px;border-radius:10px;margin-top:14px;font-size:12px;text-align:center;">
-      ✅ Mohon konfirmasi atau kirim bukti transfer setelah melakukan pembayaran.<br>Terima kasih atas kepercayaan Anda. 🙏🏻
-    </div>
-  </div>
-
-  <div class="card" id="formDepositCard">
-    <h3 style="color:#00b894;margin-bottom:10px;">💰 Form Deposit - Saldo Masuk Setelah Admin ACC</h3>
-    <label class="label">Nominal Deposit (Minimal Rp 10.000)</label>
-    <input id="nominalDep" type="number" class="input" placeholder="Contoh: 50000" oninput="generateUnik()">
-    <div id="unikBox" style="display:none;background:#1a2a00;border:1px solid #00b894;border-radius:10px;padding:12px;margin-top:10px;">
-      <div style="font-size:12px;color:#bbb;">Rincian Transfer:</div>
-      <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:13px;"><span>Nominal Deposit:</span><b id="unikNominal">Rp 0</b></div>
-      <div style="display:flex;justify-content:space-between;font-size:13px;color:#ffd54a;"><span>+ Kode Unik (wajib):</span><b id="unikKode">Rp 0</b></div>
-      <hr style="margin:8px 0;border-color:#333;">
-      <div style="display:flex;justify-content:space-between;font-size:15px;"><span><b>Total Transfer (WAJIB PAS):</b></span><b id="unikTotal" style="color:#00ff88;font-size:18px;">Rp 0</b></div>
-      <div style="font-size:11px;color:#ff8a65;margin-top:6px;">⚠️ Transfer harus persis sesuai Total Transfer agar terdeteksi otomatis. Saldo yang masuk tetap nominal deposit (tanpa kode unik).</div>
-      <button type="button" onclick="generateUnik(true)" style="margin-top:8px;padding:6px 10px;background:#22314f;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;">🔄 Ganti Kode Unik</button>
-    </div>
-    
-    <label class="label">Pilih Tujuan Transfer</label>
-    <select id="metodeDep" class="select">
-      <option value="Bank Mandiri - 1340033268904">Bank Mandiri - 1340033268904</option>
-      <option value="Bank BCA - 4180734771">Bank BCA - 4180734771</option>
-      <option value="Bank BRI - 004601060489505">Bank BRI - 004601060489505</option>
-      <option value="DANA / GoPay - 082319264646">DANA / GoPay - 082319264646</option>
-      <option value="SeaBank - 901341445605">SeaBank - 901341445605</option>
-    </select>
-
-    <label class="label">Catatan / Bukti Transfer (Opsional)</label>
-    <input id="catatanDep" type="text" class="input" placeholder="Sudah transfer dari BCA">
-    
-    <div class="infoBox">
-      • Status awal: <span class="badge pending">Pending</span><br>
-      • Admin akan cek transfer kamu<br>
-      • Jika Admin ACC: saldo <b style="color:#00ff88;">otomatis bertambah</b> ke akun kamu<br>
-      • Saldo masuk ke Firebase: <b>players/{uid}/wallet.coin</b>
-    </div>
-
-    <button id="btnDep" class="btn btn-dep">✅ KIRIM DEPOSIT - Tunggu ACC Admin</button>
-    <button class="btn btn-back" onclick="location.reload()">🔄 Refresh Saldo</button>
-  </div>
-
-  <div class="card">
-    <h3 style="color:#ffd54a;margin-bottom:10px;">📜 Riwayat Deposit</h3>
-    <div id="depList">Memuat...</div>
-  </div>
+<h2>💰 Deposit Coin</h2>
+<div class="card saldo">
+<small>Saldo Coin (Realtime)</small>
+<h1 id="saldo">0</h1>
+<div style="font-size:12px;color:#aaa;margin-top:5px" id="userInfo">Memuat...</div>
 </div>
 
+<div class="card">
+<label>Metode Deposit</label>
+<select id="metode"><option value="Transfer">Transfer Bank</option><option value="QRIS">QRIS</option></select>
+<div id="transferArea">
+<label>Pilih Bank Tujuan</label>
+<select id="bank"><option value="Mandiri">Mandiri</option><option value="BCA">BCA</option><option value="BRI">BRI</option><option value="SeaBank">SeaBank</option><option value="DANA / GoPay">DANA / GoPay</option></select>
+<div class="info"><b>Atas Nama:</b> YUDI ALIYUDIN<br><b>No. Rekening:</b> <span id="rekening" style="font-size:18px;color:#fff;font-weight:bold">1340033268904</span></div>
+</div>
+<div id="qrisArea" style="display:none;text-align:center"><img src="qris.png" alt="QRIS" style="width:220px;margin:auto"><div style="font-size:12px;color:#aaa">Scan QRIS ini</div></div>
+
+<label>Nominal Deposit (Minimal Rp 10.000)</label>
+<input type="number" id="nominalDep" placeholder="Contoh: 50000">
+<div style="font-size:12px;color:#ffd54a;margin-top:-8px;margin-bottom:12px">* Wajib pakai kode unik, akan ditambahkan otomatis</div>
+
+<button class="btn" id="btnRequestDep">REQUEST DEPOSIT</button>
+</div>
+
+<div class="card">
+<h3>📜 Riwayat Transaksi</h3>
+<div style="font-size:11px;color:#aaa;margin-bottom:8px">Pending = menunggu admin | Success = saldo sudah masuk</div>
+<div id="statusList">Memuat riwayat...</div>
+</div>
+</div>
+
+<!-- POPUP ALUR -->
+<div class="popup-bg" id="popupBg">
+<div class="popup">
+<h3>✅ Request Deposit Berhasil</h3>
+<p>Silakan transfer tepat sesuai nominal di bawah ini:</p>
+<div class="total" id="popupTotal">Rp 0</div>
+<div>Wajib transfer <b id="popupDetail"></b></div>
+<div class="kode" id="popupKode">Termasuk kode unik</div>
+<div class="info" style="text-align:left;margin-top:15px;font-size:13px">
+• Transfer ke: <b id="popupBank">-</b><br>
+• Kode unik: <b id="popupKodeUnik">-</b> (jangan dihilangkan)<br>
+• Status awal: <span class="badge badge-pending">Pending</span><br>
+• Setelah Admin ACC, saldo otomatis bertambah
+</div>
+<button class="btn" style="margin-top:15px;background:#ffd54a;color:#000" id="btnOkPopup">OK, SAYA MENGERTI</button>
+</div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-const firebaseConfig={
-  apiKey:"AIzaSyBeTALsF43ij3aAlZjF1XeBjB1gNtaTb2I",
-  authDomain:"game-demo-4db7f.firebaseapp.com",
-  projectId:"game-demo-4db7f",
-  storageBucket:"game-demo-4db7f.firebasestorage.app",
-  messagingSenderId:"405381506143",
-  appId:"1:405381506143:web:da63f34a24f01e4f0367ea"
-};
+const firebaseConfig={apiKey:"AIzaSyBeTALsF43ij3aAlZjF1XeBjB1gNtaTb2I",authDomain:"game-demo-4db7f.firebaseapp.com",projectId:"game-demo-4db7f",storageBucket:"game-demo-4db7f.firebasestorage.app",messagingSenderId:"405381506143",appId:"1:405381506143:web:da63f34a24f01e4f0367ea"};
 firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth(); 
-const db=firebase.firestore();
+const auth=firebase.auth(); const db=firebase.firestore();
+let player=null;
 
-let player=null; 
-let currentUid=null;
-let currentNick="-";
+const saldo=document.getElementById("saldo");
+const userInfo=document.getElementById("userInfo");
+const metode=document.getElementById("metode"), transferArea=document.getElementById("transferArea"), qrisArea=document.getElementById("qrisArea");
+const bank=document.getElementById("bank"), rekening=document.getElementById("rekening"), nominalDep=document.getElementById("nominalDep");
+const btnRequestDep=document.getElementById("btnRequestDep"), statusList=document.getElementById("statusList");
+const popupBg=document.getElementById("popupBg"), popupTotal=document.getElementById("popupTotal"), popupDetail=document.getElementById("popupDetail"), popupKode=document.getElementById("popupKode"), popupBank=document.getElementById("popupBank"), popupKodeUnik=document.getElementById("popupKodeUnik"), btnOkPopup=document.getElementById("btnOkPopup");
 
-function copyText(text){
-  navigator.clipboard.writeText(text).then(()=> alert("✅ No. Rekening "+text+" disalin!"));
-}
+const rekeningMap={"Mandiri":"1340033268904","BCA":"4180734771","BRI":"004601060489505","SeaBank":"901341445605","DANA / GoPay":"082319264646"};
+rekening.innerHTML=rekeningMap[bank.value];
 
 auth.onAuthStateChanged(user=>{
-  if(!user){ location.href='index.html'; return; }
-  currentUid=user.uid;
-  db.collection("players").doc(user.uid).onSnapshot(doc=>{
-    if(!doc.exists){ alert("Player tidak ditemukan"); return; }
-    player=doc.data();
-    currentNick = player.profile?.username || player.profile?.nickname || "-";
-    document.getElementById('saldo').textContent = Number(player.wallet?.coin||0).toLocaleString('id-ID');
-    document.getElementById('email').textContent = player.profile?.email || user.email;
-    document.getElementById('username').textContent = currentNick;
-    document.getElementById('uid').textContent = user.uid;
-  });
-  loadDepHistory();
-  listenSaldoMasuk();
+    if(!user){ location.href="index.html"; return; }
+    userInfo.innerText=user.email;
+    db.collection("players").doc(user.uid).onSnapshot(doc=>{
+        if(!doc.exists) return;
+        player=doc.data();
+        saldo.innerHTML=Number(player.wallet?.coin||0).toLocaleString("id-ID");
+    });
+    loadDeposit();
+    listenDepositSuccess();
 });
 
-document.getElementById('btnDep').onclick=async()=>{
-  if(hasPending){
-    alert("❌ Masih ada deposit pending! Tunggu ACC admin dulu baru bisa deposit lagi.");
-    return;
-  }
-  let nominal=Number(document.getElementById('nominalDep').value);
-  const metode=document.getElementById('metodeDep').value;
-  const catatan=document.getElementById('catatanDep').value.trim();
-  
-  if(isNaN(nominal) || nominal<10000){
-    alert("Minimal Deposit Rp 10.000"); return;
-  }
-  if(kodeUnik===0 || totalTransfer===0){
-    generateUnik(true);
-  }
-  if(totalTransfer===0) totalTransfer = nominal + kodeUnik;
-  
-  if(!currentUid){
-    alert("❌ UID tidak ditemukan, silakan login ulang!");
-    location.href='index.html';
-    return;
-  }
-  
-  if(!confirm(`Detail Deposit:\n\nNominal: Rp ${nominal.toLocaleString('id-ID')}\nKode Unik: Rp ${kodeUnik}\nTotal Transfer WAJIB: Rp ${totalTransfer.toLocaleString('id-ID')}\nTujuan: ${metode}\n\nPastikan transfer PERSIS Rp ${totalTransfer.toLocaleString('id-ID')} agar mudah di-ACC admin!`)) return;
+bank.onchange=()=> rekening.innerText=rekeningMap[bank.value];
+metode.onchange=()=>{
+    if(metode.value==="QRIS"){ transferArea.style.display="none"; qrisArea.style.display="block"; }
+    else{ transferArea.style.display="block"; qrisArea.style.display="none"; }
+};
+btnOkPopup.onclick=()=> popupBg.style.display="none";
 
-  const btn=document.getElementById('btnDep'); 
-  btn.disabled=true; 
-  btn.textContent='⏳ Mengirim...';
-
-  try{
-    const uid=currentUid;
-    if(!uid){ throw new Error("UID kosong - auth belum siap"); }
-    const saldoSebelum=Number(player?.wallet?.coin||0);
-    console.log("Mengirim deposit ke Firebase...", {uid, nominal, kodeUnik, totalTransfer, metode});
-    
-    const docRef = await db.collection("deposit").add({
-      uid: uid,
-      email: player?.profile?.email || auth.currentUser.email,
-      nickname: currentNick,
-      nominal: nominal,
-      kodeUnik: kodeUnik,
-      totalTransfer: totalTransfer,
-      metode: metode,
-      catatan: catatan || "-",
-      saldoSebelum: saldoSebelum,
-      status: "Pending",
-      konfirmasiAdmin: false,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    
-    console.log("✅ Berhasil terkirim ID:", docRef.id);
-    
-
-    showPopup("✅", "Deposit Terkirim ke Firebase!", 
-      `Permintaan deposit kamu berhasil terkirim dan menunggu ACC Admin.`,
-      `
-        <div style="display:flex;justify-content:space-between;"><span>Nominal:</span><b>Rp ${nominal.toLocaleString('id-ID')}</b></div>
-        <div style="display:flex;justify-content:space-between;color:#ffd54a;"><span>Kode Unik:</span><b>+Rp ${kodeUnik}</b></div>
-        <div style="display:flex;justify-content:space-between;color:#00ff88;font-weight:bold;margin-top:6px;"><span>Total WAJIB Transfer:</span><b>Rp ${totalTransfer.toLocaleString('id-ID')}</b></div>
-        <div style="display:flex;justify-content:space-between;margin-top:6px;"><span>Tujuan:</span><span>${metode}</span></div>
-        <div style="display:flex;justify-content:space-between;"><span>Status:</span><span style="background:#ffd54a;color:#000;padding:2px 6px;border-radius:4px;font-size:10px;">PENDING</span></div>
-        <hr style="margin:8px 0;border-color:#333;">
-        <div style="font-size:11px;color:#bbb;">✅ Data sudah masuk Firebase<br>ID: ${docRef.id}<br>Saldo akan masuk Rp ${nominal.toLocaleString('id-ID')} setelah Admin ACC<br><br>⚠️ Transfer PERSIS Rp ${totalTransfer.toLocaleString('id-ID')} agar terdeteksi!</div>
-      `);
-    document.getElementById('nominalDep').value='';
-    document.getElementById('catatanDep').value='';
-
-  }catch(err){
-    console.error("❌ Gagal kirim deposit:", err);
-    alert("❌ Gagal Deposit ke Firebase:\n"+err.message+"\n\nCek:\n1. Internet\n2. Firestore Rules harus allow write collection deposit\n3. Login ulang\n\nError: "+err.code);
-    // tampilkan di console untuk debug
-    if(err.code==='permission-denied'){
-      alert("⚠️ Firestore Rules menolak! Buka Firebase Console -> Firestore -> Rules -> ubah menjadi allow read, write: if true; untuk testing");
+// ALUR DEPOSIT SESUAI REQUEST
+btnRequestDep.onclick=async()=>{
+    if(!auth.currentUser){ alert("Login dulu"); return; }
+    const nominal=Number(nominalDep.value);
+    if(isNaN(nominal)||nominal<10000){
+        alert("Minimal deposit Rp 10.000 wajib diisi!");
+        return;
     }
-  }finally{
-    btn.disabled=false; 
-    btn.textContent='✅ KIRIM DEPOSIT - Tunggu ACC Admin';
-  }
+    // 1. WAJIB PAKAI KODE UNIK
+    const kodeUnik=Math.floor(Math.random()*900)+100; // 100-999
+    const totalTransfer=nominal+kodeUnik;
+
+    btnRequestDep.disabled=true; btnRequestDep.innerText="Memproses...";
+    try{
+        // 2. SIMPAN KE FIRESTORE STATUS PENDING
+        await db.collection("deposit").add({
+            uid:auth.currentUser.uid,
+            email:auth.currentUser.email,
+            nickname:player?.profile?.nickname||"",
+            nominal:nominal,
+            kodeUnik:kodeUnik,
+            totalTransfer:totalTransfer,
+            metode:metode.value,
+            bankTujuan:metode.value==="Transfer"?bank.value:"QRIS",
+            noRekTujuan:metode.value==="Transfer"?rekeningMap[bank.value]:"QRIS",
+            status:"Pending",
+            credited:false,
+            createdAt:firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // 3. MUNCUL POPUP - KLIK OK
+        popupTotal.innerText="Rp "+totalTransfer.toLocaleString("id-ID");
+        popupDetail.innerText="Rp "+totalTransfer.toLocaleString("id-ID");
+        popupKode.innerText=`Nominal Rp ${nominal.toLocaleString("id-ID")} + Kode Unik Rp ${kodeUnik}`;
+        popupBank.innerText=metode.value==="QRIS"?"QRIS":`${bank.value} - ${rekeningMap[bank.value]}`;
+        popupKodeUnik.innerText=kodeUnik;
+        popupBg.style.display="flex";
+
+        nominalDep.value="";
+
+    }catch(err){
+        console.error(err); alert("Gagal deposit: "+err.message);
+    }finally{
+        btnRequestDep.disabled=false; btnRequestDep.innerText="REQUEST DEPOSIT";
+    }
 };
 
-
-let lastCoin = 0;
-let isFirstLoad = true;
-
-function showPopup(icon, title, message, detailHtml=""){
-  document.getElementById('popupIcon').textContent = icon;
-  document.getElementById('popupTitle').textContent = title;
-  document.getElementById('popupMessage').innerHTML = message;
-  const detailEl = document.getElementById('popupDetail');
-  if(detailHtml){
-    detailEl.innerHTML = detailHtml;
-    detailEl.style.display='block';
-  } else {
-    detailEl.style.display='none';
-  }
-  document.getElementById('popupOverlay').style.display='flex';
+// 4. TAMPILKAN RIWAYAT TRANSAKSI PENDING/SUKSES DI BAWAH
+function loadDeposit(){
+    db.collection("deposit").where("uid","==",auth.currentUser.uid).orderBy("createdAt","desc").onSnapshot(snap=>{
+        let html="";
+        snap.forEach(doc=>{
+            const d=doc.data();
+            const tgl=d.createdAt?new Date(d.createdAt.seconds*1000).toLocaleString("id-ID"):"Baru saja";
+            let badgeClass=d.status=="Success"?"badge-success":d.status=="Reject"?"badge-reject":"badge-pending";
+            html+=`<div class="status-item" style="border-left-color:${d.status=="Success"?"#00ff88":d.status=="Pending"?"#ffd54a":"#ff4444"}">
+                <div style="display:flex;justify-content:space-between"><b>📥 Rp ${Number(d.nominal).toLocaleString("id-ID")}</b> <span class="badge ${badgeClass}">${d.status}</span></div>
+                <div style="font-size:12px;color:#aaa;margin-top:4px">Total TF: Rp ${(d.totalTransfer||d.nominal).toLocaleString("id-ID")} (kode unik ${d.kodeUnik||0})<br>${d.bankTujuan} • ${tgl}<br>Metode: ${d.metode}</div>
+                ${d.status=="Pending"?'<div style="font-size:11px;color:#ffd54a;margin-top:6px">⏳ Menunggu persetujuan admin</div>':''}
+                ${d.status=="Success"?'<div style="font-size:11px;color:#00ff88;margin-top:6px">✅ Saldo sudah ditambahkan</div>':''}
+            </div>`;
+        });
+        if(html==="") html="<div style='text-align:center;color:#aaa;padding:15px'>Belum ada transaksi deposit</div>";
+        statusList.innerHTML=html;
+    });
 }
 
-function closePopup(){
-  document.getElementById('popupOverlay').style.display='none';
-}
-
-function showSaldoMasuk(nominalBaru, totalSaldo){
-  document.getElementById('saldoMasukText').innerHTML = `Deposit kamu di-ACC Admin!<br><b style="color:#00ff88;">Rp ${nominalBaru.toLocaleString('id-ID')}</b> sudah masuk ke akun Firebase kamu!`;
-  document.getElementById('saldoMasukNow').textContent = 'Rp ' + totalSaldo.toLocaleString('id-ID');
-  document.getElementById('saldoMasukPopup').style.display='flex';
-  // Play sound effect (vibrate)
-  if(navigator.vibrate) navigator.vibrate([200,100,200]);
-}
-
-function closeSaldoPopup(){
-  document.getElementById('saldoMasukPopup').style.display='none';
-}
-
-// LISTENER SALDO MASUK - DETEKSI PERUBAHAN COIN DI FIREBASE
-function listenSaldoMasuk(){
-  if(!auth.currentUser) return;
-  db.collection("players").doc(auth.currentUser.uid).onSnapshot(doc=>{
-    if(!doc.exists) return;
-    const coinNow = Number(doc.data().wallet?.coin||0);
-    
-    if(isFirstLoad){
-      lastCoin = coinNow;
-      isFirstLoad = false;
-      return;
-    }
-    
-    if(coinNow > lastCoin){
-      const selisih = coinNow - lastCoin;
-      console.log(`💰 Saldo masuk terdeteksi! ${lastCoin} -> ${coinNow} (+${selisih})`);
-      // Tampilkan popup saldo masuk
-      showSaldoMasuk(selisih, coinNow);
-      lastCoin = coinNow;
-    } else {
-      lastCoin = coinNow;
-    }
-  });
-}
-
-
-let hasPending = false;
-
-function loadDepHistory(){
-  db.collection("deposit").where("uid","==",auth.currentUser.uid).orderBy("createdAt","desc").onSnapshot(snap=>{
-    const el=document.getElementById('depList');
-    const pendingLock = document.getElementById('pendingLock');
-    const formCard = document.getElementById('formDepositCard');
-    const rekeningCard = document.getElementById('rekeningCard');
-    
-    let html='';
-    let pendingData = null;
-    
-    if(snap.empty){
-      el.innerHTML='<div style="text-align:center;color:#777;padding:12px;">Belum ada Deposit</div>';
-      hasPending = false;
-    } else {
-      snap.forEach(doc=>{
-        const d=doc.data();
-        const t=d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString('id-ID') : '-';
-        const badge = d.status==='Pending' ? 'pending' : d.status==='Success' ? 'success' : 'reject';
-        if(d.status==='Pending' && !pendingData){
-          pendingData = d;
-          pendingData.id = doc.id;
-        }
-        html+=`
-          <div class="depItem">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <b>💰 Rp ${Number(d.nominal).toLocaleString('id-ID')}</b>
-              <span class="badge ${badge}">${d.status}</span>
-            </div>
-            <div class="row"><span>Tanggal</span><span>${t}</span></div>
-            <div class="row"><span>Tujuan</span><span>${d.metode||'-'}</span></div>
-            <div class="row"><span>Total Transfer</span><span style="color:#00ff88;font-weight:bold;">Rp ${Number(d.totalTransfer||d.nominal||0).toLocaleString('id-ID')} ${d.kodeUnik? `(+${d.kodeUnik})`:''}</span></div>
-            ${d.catatan? `<div class="row"><span>Catatan</span><span>${d.catatan}</span></div>`:''}
-            ${d.status==='Success'? '<div style="color:#00ff88;font-size:11px;margin-top:4px;">✅ Saldo Rp '+Number(d.nominal).toLocaleString('id-ID')+' sudah masuk ke akun kamu</div>':''}
-            ${d.status==='Pending'? '<div style="color:#ffd54a;font-size:11px;margin-top:4px;">⏳ Menunggu ACC Admin - Transfer PERSIS Rp '+Number(d.totalTransfer||d.nominal).toLocaleString('id-ID')+'</div>':''}
-          </div>
-        `;
-      });
-      el.innerHTML=html;
-    }
-    
-    // LOGIC HIDE FORM JIKA ADA PENDING
-    if(pendingData){
-      hasPending = true;
-      formCard.style.display='none';
-      pendingLock.style.display='block';
-      // Isi detail pending
-      document.getElementById('pendingDetail').innerHTML = `
-        <div style="display:flex;justify-content:space-between;"><span>Nominal:</span><b>Rp ${Number(pendingData.nominal).toLocaleString('id-ID')}</b></div>
-        <div style="display:flex;justify-content:space-between;color:#ffd54a;"><span>Kode Unik:</span><b>+${pendingData.kodeUnik||0}</b></div>
-        <div style="display:flex;justify-content:space-between;color:#00ff88;font-size:15px;margin-top:6px;"><span>Total WAJIB Transfer:</span><b>Rp ${Number(pendingData.totalTransfer||pendingData.nominal).toLocaleString('id-ID')}</b></div>
-        <div style="display:flex;justify-content:space-between;margin-top:6px;"><span>Tujuan:</span><span>${pendingData.metode||'-'}</span></div>
-        <div style="display:flex;justify-content:space-between;"><span>Status:</span><span class="badge pending">${pendingData.status}</span></div>
-        <div style="margin-top:10px;background:#182235;padding:8px;border-radius:6px;font-size:11px;color:#bbb;">
-          ID: ${pendingData.id}<br>
-          Sudah terkirim ke Firebase ✅<br>
-          Admin akan cek mutasi ${pendingData.metode} sejumlah Rp ${Number(pendingData.totalTransfer||pendingData.nominal).toLocaleString('id-ID')}
-        </div>
-      `;
-    } else {
-      hasPending = false;
-      formCard.style.display='block';
-      pendingLock.style.display='none';
-    }
-  }, err=>{
-    console.error("Error load history:", err);
-    document.getElementById('depList').innerHTML = '<div style="color:#ff3b30;padding:12px;">❌ Gagal load riwayat: '+err.message+'<br>Pastikan Firestore Rules allow read untuk user ini</div>';
-  });
+// 5. TRANSAKSI MENUNGGU ADMIN - KETIKA ADMIN SETUJUI SALDO BARU BERTAMBAH
+function listenDepositSuccess(){
+    const uid=auth.currentUser.uid;
+    db.collection("deposit").where("uid","==",uid).where("status","==","Success").onSnapshot(snap=>{
+        snap.forEach(doc=>{
+            const d=doc.data();
+            if(!d.credited){
+                db.collection("players").doc(uid).update({
+                    "wallet.coin":firebase.firestore.FieldValue.increment(d.nominal),
+                    "wallet.updatedAt":firebase.firestore.FieldValue.serverTimestamp()
+                }).then(()=>{
+                    doc.ref.update({credited:true});
+                    console.log("Saldo bertambah Rp "+d.nominal);
+                });
+            }
+        });
+    });
 }
 </script>
-
-<!-- POPUP MODAL -->
-<div id="popupOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:99999;align-items:center;justify-content:center;padding:20px;">
-  <div id="popupBox" style="background:#182235;border-radius:20px;padding:24px;max-width:400px;width:100%;border:2px solid #ffd54a;text-align:center;animation:popupAnim 0.3s ease;">
-    <div id="popupIcon" style="font-size:50px;margin-bottom:10px;">✅</div>
-    <h2 id="popupTitle" style="color:#ffd54a;margin-bottom:8px;">Berhasil!</h2>
-    <div id="popupMessage" style="font-size:14px;line-height:1.6;color:#fff;margin-bottom:14px;"></div>
-    <div id="popupDetail" style="background:#0b1220;border-radius:10px;padding:12px;font-size:12px;text-align:left;margin-bottom:14px;display:none;"></div>
-    <button onclick="closePopup()" style="width:100%;padding:12px;background:#00b894;color:white;border:none;border-radius:10px;font-weight:bold;cursor:pointer;">OK Mengerti</button>
-  </div>
-</div>
-
-<div id="saldoMasukPopup" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:100000;align-items:center;justify-content:center;padding:20px;">
-  <div style="background:linear-gradient(135deg,#003d2a,#182235);border-radius:20px;padding:24px;max-width:400px;width:100%;border:2px solid #00ff88;text-align:center;animation:popupAnim 0.4s ease;">
-    <div style="font-size:60px;animation:bell 1s infinite;">💰</div>
-    <h2 style="color:#00ff88;margin:10px 0;">SALDO MASUK!</h2>
-    <div id="saldoMasukText" style="font-size:14px;line-height:1.6;color:#fff;"></div>
-    <div style="background:#0b1220;border-radius:10px;padding:12px;margin:12px 0;">
-      <small style="color:#bbb;">Saldo Sekarang</small>
-      <h1 id="saldoMasukNow" style="color:#ffd54a;font-size:32px;">Rp 0</h1>
-    </div>
-    <button onclick="closeSaldoPopup()" style="width:100%;padding:12px;background:linear-gradient(180deg,#00b894,#006d4f);color:white;border:none;border-radius:10px;font-weight:bold;cursor:pointer;">🎉 SIAP MAIN!</button>
-  </div>
-</div>
-
-<style>
-@keyframes popupAnim{0%{transform:scale(0.7);opacity:0;}100%{transform:scale(1);opacity:1;}}
-@keyframes bell{0%{transform:rotate(0deg);}20%{transform:rotate(-15deg);}40%{transform:rotate(15deg);}60%{transform:rotate(-10deg);}80%{transform:rotate(10deg);}100%{transform:rotate(0deg);}}
-</style>
-
 </body>
 </html>
